@@ -1,0 +1,16 @@
+CREATE DATABASE hocmysql1 CHARACTER SET utf8 COLLATE utf8_unicode_ci
+
+CREATE TABLE thanhvien(id_thanhvien INT(10) AUTO_INCREMENT, tai_khoan VARCHAR(255),
+mat_khau VARCHAR(255), PRIMARY KEY(id_thanhvien))
+
+INSERT INTO thanhvien(tai_khoan,mat_khau) VALUES('admin','123456')
+
+SELECT *  FROM thanhvien
+
+SELECT tai_khoan FROM thanhvien
+
+SELECT * FROM thanhvien WHERE tai_khoan="laivanhieu"
+
+UPDATE thanhvien SET tai_khoan='laivanhieu" WHERE id_thanhvien="laivanhieu"
+
+DELETE FROM thanhvien WHERE id_thanhvien=1

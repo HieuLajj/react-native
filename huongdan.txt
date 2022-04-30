@@ -1,0 +1,14 @@
+useEffect
+useState
+FlatList
+TextInput
+Navigating
+RefeshControl
+ListFooterComponent
+Location
+TouchableOpacity
+Dimensions (lay chieu dai chieu rong truc tiep cua man hinh thiet bi)
+position: 'absolute'
+drawer
+KeyboardAvoidingView  (keyboardVerticalOffset)
+Keyboard     (dismiss)
