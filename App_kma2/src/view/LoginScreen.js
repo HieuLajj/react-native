@@ -13,25 +13,44 @@ import {
     Dimensions,
     TouchableOpacity,
     TextInput,
+    Keyboard, 
 } from 'react-native';
 import Wave from 'react-native-waveview';
 const widowWidth = Dimensions.get('window').width;
 const widoHeight = Dimensions.get('window').height;
 const SIGN_IN = 'SIGN_IN';
 const GET_STARTED = 'GET_STARTED';
-
 export default LoginScreen =( {navigation} )=>{
     const [page, setPage] = useState(SIGN_IN);
+    const [keyboardShow, setKeyboardShow] = React.useState();
+    React.useEffect(() => {
+        const keyboardDidShowListener = Keyboard.addListener(
+          'keyboardDidShow',
+          () => {
+              setKeyboardShow(true);
+          }
+          );
+          const keyboardDidHideListener = Keyboard.addListener(
+          'keyboardDidHide',
+          () => {
+              setKeyboardShow(false);
+          }
+          );     
+          return () => {
+          keyboardDidHideListener.remove();
+          keyboardDidShowListener.remove();
+          };
+    },[]);
     return (
         <View style={{ width:'100%' , height:'100%',backgroundColor: "#FCDEC0" }}>
             <View style={styles.Red}>
-                <RedComponet page={page} setPage={setPage}/>
+                {keyboardShow ? null : <RedComponet page={page} setPage={setPage}/>}
             </View>
             <View style={styles.Green}>
                 {page ===SIGN_IN ? <GreenComponet navigation={navigation}/> : null}
             </View>
             <View style={styles.Blue}>
-                <BlueComponet/>
+                {keyboardShow ? null : <BlueComponet/>}
             </View>
         </View>
     );
@@ -82,18 +101,19 @@ const GreenComponet = ({navigation}) => {
             <Text style={styles.body_text}>Login in your account.</Text>
             <View style= {styles.body_body}>
                 <Image source={require('../images/email_icon.png')} resizeMode='stretch' style={styles.image_icon} />
-                <TextInput placeholder='E-mail' style={styles.textinput_body} autoCapitalize={false}/>
+                <TextInput placeholder='E-mail' style={styles.textinput_body}/>
             </View>
             <View style= {styles.body_body}>
                 <Image source={require('../images/password_icon.png')} resizeMode='stretch' style={styles.image_icon} />
                 <TextInput 
                     placeholder='Password' style={styles.textinput_body}
-                    autoCapitalize={false} secureTextEntry={pwdHidden ? true : false}
+                    secureTextEntry={pwdHidden ? true : false}
                 />
                 <TouchableOpacity 
                     style={styles.eye_button}
                     onPress={()=>{setPwdHidden(!pwdHidden)}}>
-                        <Image source={require('../images/open-eye.png')} resizeMode='stretch' style={styles.image_eye} />
+                        {pwdHidden ?  <Image source={require('../images/close_eye.png')} resizeMode='stretch' style={styles.image_eye} /> :
+                         <Image source={require('../images/open-eye.png')} resizeMode='stretch' style={styles.image_eye} /> }
                 </TouchableOpacity>
             </View>
             <View style= {styles.body_body2}>
@@ -117,7 +137,6 @@ const BlueComponet = () => {
                 style={styles.wave}
                 H={80}
                 waveParams={[
-                //  {A: 10, T: 180, fill: 'red'},
                     {A: 10, T: 702, fill: '#7D5A50'},
                     {A: 15, T: 546, fill: '#E5B299'},
                     {A: 20, T: 390, fill: '#B4846C'},
@@ -135,7 +154,6 @@ const styles = StyleSheet.create({
     Green : {
         width:'100%',
         height:'50%',
-      //  backgroundColor:'#F4EEFF', 
     },
     Blue : {
         flex: 1,
@@ -258,16 +276,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
 
     },
-    // wave: {
-    //     width: "100%",
-    //     aspectRatio: 2,
-    //     overflow: 'hidden',
-    //     backgroundColor: '#F4EEFF',
-    // }, 
     wave: {
         width: widowWidth,
         height: widoHeight * 0.25,
-       // aspectRatio: 1,
         overflow: 'hidden',
         backgroundColor: '#FCDEC0',
     },
