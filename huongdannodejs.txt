@@ -1,0 +1,3 @@
+npm init
+npm install --save-exact express@4.18.1
+node server.js

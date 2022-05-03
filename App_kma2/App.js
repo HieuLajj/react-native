@@ -39,21 +39,6 @@ const App= () => {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
   return (
-  // <View style={_styles.container} > 
-  //   <Wave
-  //    //
-  //    //   ref={ref=>this._waveRect = ref}
-  //     style={_styles.wave}
-  //     H={130}
-  //     waveParams={[
-  //       {A: 30, T: 540, fill: '#424874'},
-  //       {A: 45, T: 420, fill: '#DCD6F7'},
-  //       {A: 90, T: 450, fill: '#A6B1E1'},
-  //     ]}
-  //     animated={true}
-  //      speed={20}
-  //   />   
-  // </View>
   <NavigationContainer>
      <Stack.Navigator 
       initialRouteName="Login"

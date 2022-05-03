@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState,useRef,useEffect} from 'react';
 import {
     Image,
     SafeAreaView,
@@ -14,6 +14,7 @@ import {
     TouchableOpacity,
     TextInput,
     Keyboard, 
+    Animated,
 } from 'react-native';
 import Wave from 'react-native-waveview';
 const widowWidth = Dimensions.get('window').width;
@@ -35,28 +36,79 @@ export default LoginScreen =( {navigation} )=>{
           () => {
               setKeyboardShow(false);
           }
-          );     
+          );   
+
+          Animation_wave_reset();
           return () => {
           keyboardDidHideListener.remove();
           keyboardDidShowListener.remove();
           };
     },[]);
+
+    
+    const topMotion1 = useRef(new Animated.Value(0)).current;
+    const topMotion2 = useRef(new Animated.Value(0)).current;
+    const Animation_wave = () => {
+        Animated.parallel([
+            Animated.timing(topMotion1,{
+                toValue: -widoHeight * 0.25,
+                duration: 2000,
+                useNativeDriver: false,
+            }),
+            Animated.timing(topMotion2,{
+                toValue: widoHeight * 0.25,
+                duration: 2000,
+                useNativeDriver: false,
+            }),
+        ]).start();
+    }
+    
+    const Animation_wave_reset = () => {
+        Animated.parallel([
+            Animated.timing(topMotion1,{
+                toValue: 0,
+                duration: 2000,
+                useNativeDriver: false,
+            }),
+            Animated.timing(topMotion2,{
+                toValue: 0,
+                duration: 2000,
+                useNativeDriver: false,
+            }),
+        ]).start();
+        setPage(SIGN_IN);
+    }
+
     return (
         <View style={{ width:'100%' , height:'100%',backgroundColor: "#FCDEC0" }}>
             <View style={styles.Red}>
-                {keyboardShow ? null : <RedComponet page={page} setPage={setPage}/>}
+            <Animated.View style={{marginTop:topMotion1,width: '100%', height: '100%'}}>
+                {keyboardShow ? null : <RedComponet page={page} setPage={setPage} Animation_wave={Animation_wave} 
+                                                    navigation={navigation} Animation_wave_reset={Animation_wave_reset}/>}
+            </Animated.View>
             </View>
             <View style={styles.Green}>
                 {page ===SIGN_IN ? <GreenComponet navigation={navigation}/> : null}
             </View>
+
             <View style={styles.Blue}>
-                {keyboardShow ? null : <BlueComponet/>}
+                <Animated.View style={{marginTop:topMotion2,width: '100%', height: '100%'}}>
+                    {keyboardShow ? null : <BlueComponet/>} 
+                </Animated.View>
             </View>
+              
         </View>
     );
 }
 
-const RedComponet = ({page,setPage}) => {
+const RedComponet = ({page,setPage,Animation_wave,navigation,Animation_wave_reset}) => {
+//{page,setPage,Animation_wave,navigation}
+    const combie = () => {
+        setPage(GET_STARTED);
+        Animation_wave();
+        setTimeout(()=>{ navigation.navigate('Home', { name: 'Jane' })},2000);
+        setTimeout(Animation_wave_reset,2500);
+    }
     return(
         <View style={styles.container}>
             <View style={styles.top}>
@@ -78,12 +130,12 @@ const RedComponet = ({page,setPage}) => {
 
                     <TouchableOpacity 
                         style={styles._button}
-                        onPress={()=>{setPage(GET_STARTED)}}
+                        onPress={combie}
                         disabled = {page===GET_STARTED ? true : false}>
                         
                             <Text style={styles._button_text}>Get Started</Text>
                             {
-                                page === GET_STARTED ? <View style={styles._button_bottom}></View> : null
+                                page === GET_STARTED ? <View style={styles._button_bottom}></View> :null
                             }
                     </TouchableOpacity>
                 </View>
@@ -123,7 +175,8 @@ const GreenComponet = ({navigation}) => {
             </View>
             <TouchableOpacity
                 style= {styles.button_login}
-                onPress={() =>navigation.navigate('Home', { name: 'Jane' })}>
+                onPress={() =>navigation.navigate('Home', { name: 'Jane' })}
+                >
                     <Text style = {styles.text_login}> Login </Text>
             </TouchableOpacity>
         </View>
@@ -156,6 +209,7 @@ const styles = StyleSheet.create({
         height:'50%',
     },
     Blue : {
+      //  marginTop: topMotion2,
         flex: 1,
     },
     container: {
