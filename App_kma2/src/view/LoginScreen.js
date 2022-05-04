@@ -1,9 +1,9 @@
 import React, {useState,useRef,useEffect} from 'react';
+import styless from '../components/styless';
+import Input from '../components/Input'
+import Button2 from '../components/Button2'
 import {
     Image,
-    SafeAreaView,
-    ScrollView,
-    StatusBar,
     StyleSheet,
     Text,
     useColorScheme,
@@ -17,8 +17,6 @@ import {
     Animated,
 } from 'react-native';
 import Wave from 'react-native-waveview';
-const widowWidth = Dimensions.get('window').width;
-const widoHeight = Dimensions.get('window').height;
 const SIGN_IN = 'SIGN_IN';
 const GET_STARTED = 'GET_STARTED';
 export default LoginScreen =( {navigation} )=>{
@@ -37,8 +35,6 @@ export default LoginScreen =( {navigation} )=>{
               setKeyboardShow(false);
           }
           );   
-
-          Animation_wave_reset();
           return () => {
           keyboardDidHideListener.remove();
           keyboardDidShowListener.remove();
@@ -51,13 +47,13 @@ export default LoginScreen =( {navigation} )=>{
     const Animation_wave = () => {
         Animated.parallel([
             Animated.timing(topMotion1,{
-                toValue: -widoHeight * 0.25,
-                duration: 2000,
+                toValue: -styless.widoHeight * 0.25,
+                duration: 1000,
                 useNativeDriver: false,
             }),
             Animated.timing(topMotion2,{
-                toValue: widoHeight * 0.25,
-                duration: 2000,
+                toValue: styless.widoHeight * 0.25,
+                duration: 1000,
                 useNativeDriver: false,
             }),
         ]).start();
@@ -67,12 +63,12 @@ export default LoginScreen =( {navigation} )=>{
         Animated.parallel([
             Animated.timing(topMotion1,{
                 toValue: 0,
-                duration: 2000,
+                duration: 1000,
                 useNativeDriver: false,
             }),
             Animated.timing(topMotion2,{
                 toValue: 0,
-                duration: 2000,
+                duration: 1000,
                 useNativeDriver: false,
             }),
         ]).start();
@@ -106,8 +102,8 @@ const RedComponet = ({page,setPage,Animation_wave,navigation,Animation_wave_rese
     const combie = () => {
         setPage(GET_STARTED);
         Animation_wave();
-        setTimeout(()=>{ navigation.navigate('Home', { name: 'Jane' })},2000);
-        setTimeout(Animation_wave_reset,2500);
+        setTimeout(()=>{ navigation.navigate('Register')},1000);
+        setTimeout(Animation_wave_reset,1500);
     }
     return(
         <View style={styles.container}>
@@ -145,40 +141,77 @@ const RedComponet = ({page,setPage,Animation_wave,navigation,Animation_wave_rese
 }
 
 const GreenComponet = ({navigation}) => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [pwdHidden, setPwdHidden] = useState(true);
+    const [inputs, setInputs] = useState({
+        email: '',
+        password: '',
+      });
+      const [errors, setErrors] = useState({});
+    const handleOnChange = (text,input) => {
+        setInputs(prevState=>({...prevState,[input]:text}));
+    };
+    const handleError = (error,input)=>{
+        setErrors((prevState)=>({...prevState,[input]:error}));
+    };
+
+    const validate = () => {
+        Keyboard.dismiss();
+        let isValid = true;
+        if (!inputs.email) {
+    
+          handleError('Please input email', 'email');
+          isValid = false;
+        }else{
+          let regex = new RegExp("([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\"\(\[\]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\[[\t -Z^-~]*])");
+          if(!regex.test(inputs.email)){
+            handleError('Please input a valid email', 'email');
+            isValid = false;
+          }
+        }
+        if (!inputs.password) {
+          handleError('Please input password', 'password');
+          isValid = false;
+        } else if (inputs.password.length < 5) {
+          handleError('Min password length of 5', 'password');
+          isValid = false;
+        }
+        if (isValid) {
+          login();
+        }
+    };
+    
+    const login = () => {
+        navigation.navigate('Home');
+    }
+
     return(
         <View style={styles.body}>
             <Text style={styles.body_text}>Login in your account.</Text>
-            <View style= {styles.body_body}>
-                <Image source={require('../images/email_icon.png')} resizeMode='stretch' style={styles.image_icon} />
-                <TextInput placeholder='E-mail' style={styles.textinput_body}/>
-            </View>
-            <View style= {styles.body_body}>
-                <Image source={require('../images/password_icon.png')} resizeMode='stretch' style={styles.image_icon} />
-                <TextInput 
-                    placeholder='Password' style={styles.textinput_body}
-                    secureTextEntry={pwdHidden ? true : false}
-                />
-                <TouchableOpacity 
-                    style={styles.eye_button}
-                    onPress={()=>{setPwdHidden(!pwdHidden)}}>
-                        {pwdHidden ?  <Image source={require('../images/close_eye.png')} resizeMode='stretch' style={styles.image_eye} /> :
-                         <Image source={require('../images/open-eye.png')} resizeMode='stretch' style={styles.image_eye} /> }
-                </TouchableOpacity>
-            </View>
+            <Input 
+                iconName="email-outline" 
+                placeholder="Email"
+                error={errors.email}
+                onFocus={()=>{
+                handleError(null,'email');
+                }}
+                onChangeText = {(text) => handleOnChange(text,'email')}
+            />
+
+            <Input 
+                iconName="lock-outline" 
+                placeholder="Password"
+                error={errors.password}
+                onFocus={()=>{
+                handleError(null,'password');
+                }}
+                password
+                onChangeText = {(text) => handleOnChange(text,'password')}
+            />
             <View style= {styles.body_body2}>
                 <TouchableOpacity style= {styles.forget_psw2}>
                     <Text style= {styles.forget_psw}>Forget password ?</Text>
                 </TouchableOpacity>
             </View>
-            <TouchableOpacity
-                style= {styles.button_login}
-                onPress={() =>navigation.navigate('Home', { name: 'Jane' })}
-                >
-                    <Text style = {styles.text_login}> Login </Text>
-            </TouchableOpacity>
+            <Button2 title="Login" onPress={validate}/>
         </View>
     );
 }
@@ -209,7 +242,6 @@ const styles = StyleSheet.create({
         height:'50%',
     },
     Blue : {
-      //  marginTop: topMotion2,
         flex: 1,
     },
     container: {
@@ -267,7 +299,7 @@ const styles = StyleSheet.create({
         marginRight: 30,
     },
     body_body : {
-        width: widowWidth - 60,
+        width: styless.widowWidth - 60,
         marginLeft: 30,
         height: 45,
         marginTop: 20,
@@ -278,34 +310,12 @@ const styles = StyleSheet.create({
 
     },
     body_body2 : {
-        width: widowWidth - 60,
+        width: styless.widowWidth - 60,
         marginLeft: 30,
         height:45,
        // marginTop: 20,
         flexDirection: 'row',
         alignItems: 'center',
-    },
-    image_icon : {
-        width:25,
-        height:25,
-        marginLeft:10,
-    },
-    textinput_body : {
-        height: '100%',
-        flex: 1,
-        marginLeft: 10,
-        fontSize: 16,
-    },
-    image_eye : {
-        width:20,
-        height:20,
-        
-    },
-    eye_button : {
-        height: '100%',
-        aspectRatio: 1,
-        alignItems: 'center',
-        justifyContent: 'center',
     },
     forget_psw2 : {
         position: 'absolute',
@@ -315,24 +325,9 @@ const styles = StyleSheet.create({
         color: '#707070',
 
     },
-    button_login : {
-        height: 45,
-        width: widowWidth - 60,
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginLeft: 30,
-        marginTop: 0,
-        backgroundColor: '#7D5A50',
-        borderRadius: 100,
-    },
-    text_login : {
-        color: 'white',
-        fontSize: 16,
-
-    },
     wave: {
-        width: widowWidth,
-        height: widoHeight * 0.25,
+        width: styless.widowWidth,
+        height: styless.widoHeight * 0.25,
         overflow: 'hidden',
         backgroundColor: '#FCDEC0',
     },

@@ -15,8 +15,6 @@ import {
   Animated,
   Button,
 } from 'react-native';
-const widowWidth = Dimensions.get('window').width;
-const widoHeight = Dimensions.get('window').height;
 export default HomeScreen =( {navigation,route} )=>{
   const topMotion = useRef(new Animated.Value(0)).current;
   const fadeIn = () => {

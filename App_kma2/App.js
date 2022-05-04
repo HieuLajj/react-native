@@ -29,6 +29,7 @@ import Svg, {
 } from 'react-native-svg';
 import LoginScreen from './src/view/LoginScreen';
 import HomeScreen from './src/view/HomeScreen';
+import RegisterScreen from './src/view/RegisterScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -49,6 +50,7 @@ const App= () => {
 
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen}/>
       </Stack.Navigator>
 
   </NavigationContainer>
