@@ -1,5 +1,6 @@
 import React from 'react';
 import styless from '../components/styless'
+import colors  from '../components/colors'
 import {
     StyleSheet,
     Text,
@@ -8,6 +9,7 @@ import {
   } from 'react-native';
 
 const Button2 = ({title, onPress=()=>{}}) =>{
+
     return(
         <TouchableOpacity
             activeOpacity={0.7}
@@ -20,16 +22,27 @@ const Button2 = ({title, onPress=()=>{}}) =>{
 }
 const styles = StyleSheet.create({
     button_2 : {
-    height: 45,
-    width: styless.widowWidth - 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 30,
-    marginTop: 20,
-    backgroundColor: '#7D5A50',
-    borderRadius: 100,
+        shadowColor: "#000",
+        borderStyle:'solid',
+        borderWidth: 1,
+        borderColor: colors.darkBlue,
+        height: 45,
+        width: styless.widowWidth - 60,
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginLeft: 30,
+        shadowOpacity: 0.32,
+        shadowRadius: 5.46,
+        shadowOffset: {
+            width: 0,
+            height: 4,
+        },
+        elevation: 3,
+        backgroundColor: '#7D5A50',
+        borderRadius: 6,
     },
     text_2 : {
+        fontWeight:'bold',
         color: 'white',
         fontSize: 16,
 

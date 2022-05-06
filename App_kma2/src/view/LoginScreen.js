@@ -2,6 +2,7 @@ import React, {useState,useRef,useEffect} from 'react';
 import styless from '../components/styless';
 import Input from '../components/Input'
 import Button2 from '../components/Button2'
+import colors from '../components/colors'
 import {
     Image,
     StyleSheet,
@@ -141,6 +142,7 @@ const RedComponet = ({page,setPage,Animation_wave,navigation,Animation_wave_rese
 }
 
 const GreenComponet = ({navigation}) => {
+
     const [inputs, setInputs] = useState({
         email: '',
         password: '',

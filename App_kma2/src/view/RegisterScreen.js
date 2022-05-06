@@ -122,6 +122,7 @@ export default RegisterScreen =( {navigation} )=>{
             onChangeText = {(text) => handleOnChange(text,'password')}
           />
         </View>
+        <View style={{marginBottom:15}}></View>
         <Button2 title="Register" onPress={validate}/>
         <Text 
           onPress={() => navigation.navigate('Login')}
