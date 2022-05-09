@@ -30,6 +30,7 @@ import Svg, {
 import LoginScreen from './src/view/LoginScreen';
 import HomeScreen from './src/view/HomeScreen';
 import RegisterScreen from './src/view/RegisterScreen';
+import SalonListDentails from './src/view/SalonListDetails';
 
 const Stack = createNativeStackNavigator();
 
@@ -51,6 +52,7 @@ const App= () => {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Register" component={RegisterScreen}/>
+        <Stack.Screen name="SalonList" component={SalonListDentails}/>
       </Stack.Navigator>
 
   </NavigationContainer>

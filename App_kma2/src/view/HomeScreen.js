@@ -10,19 +10,22 @@ import {
   TouchableHighlight,
   TextInput,
   TouchableOpacity,
+  TouchableWithoutFeedback,
   Dimensions,
   Keyboard, 
   Animated,
   Button,
   Image,
   state,
+  FlatList,
 } from 'react-native';
 const {width} = Dimensions.get('window');
 import colors from '../components/colors'
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-//import SelectDropdown from 'react-native-select-dropdown'
+import {faker} from '@faker-js/faker'
 import SelectDropdown from 'react-native-select-dropdown'
+import salon from '../components/salon'
 const TODAY = 'TODAY';
 const MONTH = 'MONTH';
 export default HomeScreen =( {navigation,route} )=>{
@@ -36,6 +39,30 @@ export default HomeScreen =( {navigation,route} )=>{
     {title: 'Other', image: require('../images/image_select/ic_working.png')},
     
   ];
+  faker.seed(10);
+  const DATA = [...Array(30).keys()].map((_,i)=>{
+    return{
+      image: `randomuser.me/api/portraits/${faker.helpers.arrayElement('women','men')}/${faker.datatype.number(60)}.jpg`,
+      key: faker.datatype.uuid(),
+      name: faker.name.findName(),
+      jobTitle:faker.name.jobTitle(),
+      email: faker.internet.email(),
+    }
+  });
+  const SPACING =20;
+  const AVATAR_SIZE = 70;
+  const Item = ({ title }) => (
+    <View style={styles.item}>
+      <Text style={styles.title}>{title}</Text>
+    </View>
+  );
+  const renderItem = ({ item }) => (
+    <Text>{item.name}</Text>
+  );
+  const oneAnimal = ({item})=>{
+   <Text>{item.name}</Text>
+  }
+
   return (
     <View style={styles.container}>
       <View style={{padding: 30}}>
@@ -71,7 +98,7 @@ export default HomeScreen =( {navigation,route} )=>{
               borderBottomWidth: 4,
               borderBottomColor:  day === MONTH ? colors.blue: colors.black,
               color:'red',
-              marginLeft: 30,
+              marginLeft: 20,
             }}
             onPress = {()=>{setday(MONTH)}}
             disabled = {day === MONTH ? true : false}
@@ -85,6 +112,29 @@ export default HomeScreen =( {navigation,route} )=>{
               }}
             >MONTH</Text>
           </TouchableOpacity>
+        </View>
+        <View style={styles.list}>
+          <FlatList
+            data={salon}
+            keyExtractor = {item => item.key}
+            contentContainerStyle={{padding:5,paddingBottom:20,}}
+            renderItem={({item})=>{
+              return <TouchableOpacity onPress={()=>{
+                navigation.navigate('SalonList',{item});
+              }} style={{flex:1,marginBottom:5}}>
+                  <View style={{padding:10,flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
+                    <View style={[StyleSheet.absoluteFillObject,{backgroundColor:item.color,
+                                  borderRadius:10,
+                    }]}/>
+                    <View>
+                      <Text style={styles.name}>{item.name}</Text>
+                      <Image source={item.image} style={styles.image}/>
+                    </View>
+                    <Text style={styles.text}>-{item.total}</Text>
+                  </View>
+              </TouchableOpacity>
+            }}
+            />
         </View>
       </View>
     </View>
@@ -145,8 +195,28 @@ const styles = StyleSheet.create({
   },
   body_title : {
     flexDirection: 'row',
-    paddingTop: 20,
-    padding: 50,
+    //paddingTop: 0,
+    //padding: 20,
+    paddingLeft:20,
+    paddingBottom:5
+  },
+  name:{
+    fontWeight:'700',
+    fontSize:18,
+  },
+  image:{
+    width: 60,
+    height: 60,
+    resizeMode: 'contain',
+  },
+  text: {
+    color: 'red',
+    fontWeight:'bold',
+    fontSize:20
+  },
+  list:{
+    flex:1,
+    flexGrow:1,
   },
 
 

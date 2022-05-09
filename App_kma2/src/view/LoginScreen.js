@@ -156,29 +156,29 @@ const GreenComponet = ({navigation}) => {
     };
 
     const validate = () => {
-        Keyboard.dismiss();
-        let isValid = true;
-        if (!inputs.email) {
+        // Keyboard.dismiss();
+        // let isValid = true;
+        // if (!inputs.email) {
     
-          handleError('Please input email', 'email');
-          isValid = false;
-        }else{
-          let regex = new RegExp("([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\"\(\[\]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\[[\t -Z^-~]*])");
-          if(!regex.test(inputs.email)){
-            handleError('Please input a valid email', 'email');
-            isValid = false;
-          }
-        }
-        if (!inputs.password) {
-          handleError('Please input password', 'password');
-          isValid = false;
-        } else if (inputs.password.length < 5) {
-          handleError('Min password length of 5', 'password');
-          isValid = false;
-        }
-        if (isValid) {
+        //   handleError('Please input email', 'email');
+        //   isValid = false;
+        // }else{
+        //   let regex = new RegExp("([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\"\(\[\]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\[[\t -Z^-~]*])");
+        //   if(!regex.test(inputs.email)){
+        //     handleError('Please input a valid email', 'email');
+        //     isValid = false;
+        //   }
+        // }
+        // if (!inputs.password) {
+        //   handleError('Please input password', 'password');
+        //   isValid = false;
+        // } else if (inputs.password.length < 5) {
+        //   handleError('Min password length of 5', 'password');
+        //   isValid = false;
+        // }
+        // if (isValid) {
           login();
-        }
+        //}
     };
     
     const login = () => {
