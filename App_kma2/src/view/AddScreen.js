@@ -14,11 +14,11 @@ import {
 
 
 
-const SalonListDentails= () => {
+const AddScreen= () => {
   return (
-      <Text>Day la ssssLai Van Hieu</Text>
+      <Text>Add Screen</Text>
   );
 };
 
 
-export default SalonListDentails;
+export default  AddScreen;

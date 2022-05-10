@@ -182,7 +182,7 @@ const GreenComponet = ({navigation}) => {
     };
     
     const login = () => {
-        navigation.navigate('Home');
+        navigation.navigate('HomeTab');
     }
 
     return(

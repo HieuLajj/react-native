@@ -39,79 +39,64 @@ export default HomeScreen =( {navigation,route} )=>{
     {title: 'Other', image: require('../images/image_select/ic_working.png')},
     
   ];
-  faker.seed(10);
-  const DATA = [...Array(30).keys()].map((_,i)=>{
-    return{
-      image: `randomuser.me/api/portraits/${faker.helpers.arrayElement('women','men')}/${faker.datatype.number(60)}.jpg`,
-      key: faker.datatype.uuid(),
-      name: faker.name.findName(),
-      jobTitle:faker.name.jobTitle(),
-      email: faker.internet.email(),
-    }
-  });
   const SPACING =20;
   const AVATAR_SIZE = 70;
-  const Item = ({ title }) => (
-    <View style={styles.item}>
-      <Text style={styles.title}>{title}</Text>
-    </View>
-  );
-  const renderItem = ({ item }) => (
-    <Text>{item.name}</Text>
-  );
-  const oneAnimal = ({item})=>{
-   <Text>{item.name}</Text>
-  }
-
   return (
     <View style={styles.container}>
-      <View style={{padding: 30}}>
-        <Text style={styles.text_1}>My Budget</Text>
-
-        <Text style={styles.text_2}>$537.432</Text>
+      <View style={{height:"25%"}}>
+        <View style={{flex:1, justifyContent:'center',alignItems:'center'}}>
+          <Text style={styles.text_1}>My Budget</Text>
+          <Text style={styles.text_2}>$537.432</Text>
+        </View>
       </View>
 
       <View style={styles.body}>
         <View style={styles.body_title}>
-          <TouchableOpacity
+          <View style={{ flexDirection: 'row'}}>
+            <TouchableOpacity
+              onPress = {()=>{setday(TODAY)}}
+              style={{alignContent:'center',justifyContent:'center'}}
+              disabled = {day === TODAY ? true : false}
+            >
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: 25,
+                  color:day === TODAY ? colors.blue: colors.black,
+                  opacity: day === TODAY ? 1 : 0.5,
+                }}
+              >TODAY</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style = {{
+                marginLeft: 20,
+                salignContent:'center',
+                justifyContent:'center'
+              }}
+              onPress = {()=>{setday(MONTH)}}
+              disabled = {day === MONTH ? true : false}
+            >
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: 25,
+                  color:day === MONTH ? colors.blue: colors.black,
+                  opacity: day === MONTH ? 1 : 0.5,
+                }}
+              >MONTH</Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{alignItems:'center',justifyContent:'center'}}>
+          <Text 
             style={{
-              paddingVertical:6,
-              borderBottomWidth: 4,
-              borderBottomColor:  day === TODAY ? colors.blue: colors.black,
-              color:'red',
+              fontWeight: 'bold',
+              fontSize: 25,
+              color:"red",
+              paddingRight:15,
             }}
-            onPress = {()=>{setday(TODAY)}}
-            disabled = {day === TODAY ? true : false}
-          >
-            <Text
-              style={{
-                fontWeight: 'bold',
-                fontSize: 25,
-                color:day === TODAY ? colors.blue: colors.black,
-                opacity: day === TODAY ? 1 : 0.5,
-              }}
-            >TODAY</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style = {{
-              paddingVertical:6,
-              borderBottomWidth: 4,
-              borderBottomColor:  day === MONTH ? colors.blue: colors.black,
-              color:'red',
-              marginLeft: 20,
-            }}
-            onPress = {()=>{setday(MONTH)}}
-            disabled = {day === MONTH ? true : false}
-          >
-            <Text
-               style={{
-                fontWeight: 'bold',
-                fontSize: 25,
-                color:day === MONTH ? colors.blue: colors.black,
-                opacity: day === MONTH ? 1 : 0.5,
-              }}
-            >MONTH</Text>
-          </TouchableOpacity>
+            >-1111</Text>
+          </View>
+          
         </View>
         <View style={styles.list}>
           <FlatList
@@ -119,14 +104,11 @@ export default HomeScreen =( {navigation,route} )=>{
             keyExtractor = {item => item.key}
             contentContainerStyle={{padding:5,paddingBottom:20,}}
             renderItem={({item})=>{
-              return <TouchableOpacity onPress={()=>{
-                navigation.navigate('SalonList',{item});
-              }} style={{flex:1,marginBottom:5}}>
+              return <TouchableOpacity onPress={()=>{navigation.navigate('SalonList',{item});}} style={{flex:1,marginBottom:5}}>
                   <View style={{padding:10,flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
                     <View style={[StyleSheet.absoluteFillObject,{backgroundColor:item.color,
-                                  borderRadius:10,
-                    }]}/>
-                    <View>
+                                  borderRadius:10,}]}/>
+                    <View style={{justifyContent:'center', alignItems:'center'}}>
                       <Text style={styles.name}>{item.name}</Text>
                       <Image source={item.image} style={styles.image}/>
                     </View>
@@ -178,27 +160,30 @@ const styles = StyleSheet.create({
   },
   text_1 :{
     color: colors.white,
-    fontSize: 30,
-    fontWeight: '700',
+    fontSize: 15,
+    fontWeight: 'bold',
   },
   text_2 :{
     color: colors.white,
-    fontSize: 50,
+    fontSize: 45,
     fontWeight: '700'
   },
   body : {
-    height: '100%',
-    width : '100%',
+    // height: '100%',
+    // width : '100%',
+    flex: 1,
     backgroundColor: colors.white,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
   },
   body_title : {
+    height:45,
     flexDirection: 'row',
     //paddingTop: 0,
     //padding: 20,
     paddingLeft:20,
-    paddingBottom:5
+    paddingBottom:5,
+    justifyContent:'space-between',
   },
   name:{
     fontWeight:'700',
