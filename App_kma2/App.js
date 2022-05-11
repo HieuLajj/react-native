@@ -3,8 +3,9 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 import { useNavigation } from '@react-navigation/native'
-
+import 'react-native-gesture-handler'
 //import Wave from 'react-native-waveview'
 import {
   SafeAreaView,
@@ -37,8 +38,13 @@ import SalonListDentails from './src/view/SalonListDetails';
 import AddScreen from './src/view/AddScreen';
 import TodoScreen from './src/view/TodoScreen';
 import AddButton from './src/components/AddButton';
+import HomeButton from './src/components/HomeButton';
+import TodoButton from './src/components/TodoButton';
+import SettingScreen from './src/view/SettingScreen';
+import { DrawerContent } from './src/components/DrawerContent';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+const Drawer = createDrawerNavigator();
 
 
 function MyTabs() {
@@ -50,17 +56,36 @@ function MyTabs() {
       }}
       backBehavior="history"
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Home" component={HomeScreen} options={{
+        tabBarIcon:({focused}) => <HomeButton focused={focused}/>,
+      }}/>
       <Tab.Screen name="Add" component={AddScreen}   options={{
-       // tabBarIcon: ()=><Image source={require('./src/images/image_select/ic_Clothes.png')} style={{width:30,height:30}}  resizeMode="stretch"/>
-       tabBarIcon: ()=> <AddButton/>,  
+       tabBarIcon: ({focused})=><AddButton  focused={focused}/>,  
        tabBarLabel: "",
+       //tabBarButton:()=> <AddButton/>,
        
       }}/>
-      <Tab.Screen name="Todo" component={TodoScreen}/>
+      <Tab.Screen name="Todo" component={TodoScreen} options={{
+         tabBarIcon:({focused}) => <TodoButton focused={focused}/>,
+      }}/>
 
     </Tab.Navigator>
   );
+}
+
+function MyDraws(){
+  return(
+    <Drawer.Navigator  
+        initialRouteName="Home"
+        screenOptions={{
+         headerShown: false
+       }}
+       drawerContent={ props => <DrawerContent {...props}/>}
+       > 
+      <Drawer.Screen name="MyTab" component={MyTabs}/>
+      <Drawer.Screen name="Setting" component={SettingScreen}/>
+    </Drawer.Navigator>
+  )
 }
 
 const App= () => {
@@ -79,10 +104,10 @@ const App= () => {
       >
 
         <Stack.Screen name="Login" component={LoginScreen} />
-        {/* <Stack.Screen name="Home" component={HomeScreen} /> */}
         <Stack.Screen name="Register" component={RegisterScreen}/>
         <Stack.Screen name="SalonList" component={SalonListDentails}/>
-        <Stack.Screen name="HomeTab" component={MyTabs}/>
+        {/* <Stack.Screen name="HomeTab" component={MyTabs}/> */}
+        <Stack.Screen name="MyDraw" component={MyDraws}/>
       </Stack.Navigator>
 
   </NavigationContainer>

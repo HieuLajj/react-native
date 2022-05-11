@@ -15,19 +15,21 @@ import {
 } from 'react-native';
 
 
-export default class AddButton extends React.Component{
-    render(){
+const AddButton = ({focused}) =>{
         return(
             <View style={{position:'absolute', alignItems:'center'}}>
                   
                     <View style={styles.button}>
-                        <FontAwesome name='plus' size={24} color="#fff"></FontAwesome>
+                        <FontAwesome name={focused ? 'plane': 'plus'} size={24} color={focused ? 'yellow': '#fff'}></FontAwesome>
+                      {/* //  name= {focused? 'gr': colors.black} */}
                     </View>
                    
             </View>
         )
-    }
+    
 }
+export default AddButton;
+
 const styles= StyleSheet.create({
     button: {
         backgroundColor:"#7f58ff",

@@ -182,7 +182,7 @@ const GreenComponet = ({navigation}) => {
     };
     
     const login = () => {
-        navigation.navigate('HomeTab');
+        navigation.navigate('MyDraw');
     }
 
     return(

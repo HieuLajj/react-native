@@ -14,11 +14,11 @@ import {
 
 
 
-const AddScreen= () => {
+const SettingScreen= () => {
   return (
-      <Text>Add Secreen</Text>
+      <Text>Setting Screen</Text>
   );
 };
 
 
-export default  AddScreen;
+export default  SettingScreen;
