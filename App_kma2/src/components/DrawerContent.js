@@ -4,23 +4,62 @@ import {View, Text, StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer'
 export function DrawerContent(props){
+
+    const[isDarkTheme,setIsDarkTheme] = React.useState(false);
+    const toggleTheme = () => {
+      setIsDarkTheme(!isDarkTheme);
+    } 
     return(
         <View style={{flex:1}}>
             <DrawerContentScrollView {...props}>
                 <View style={styles.drawerContent}>
                    <View style={styles.userInfoSection}>
-                        <View>
+                        <View style={{flexDirection:'row', marginTop:15}}>
                             <Avatar.Image source={{
                                   uri: 'https://sieupet.com/sites/default/files/pictures/images/1-1473150685951-5.jpg'
                             }}
                             size={50}
                             />
-                        </View>
-                        <View>
-                          <Title style={styles.title}>Lai Van Hieu</Title>
-                          <Caption style={styles.caption}>@hieu.pro</Caption> 
+                            <View style={{marginLeft:15,flexDirection:'column'}}>
+                              <Title style={styles.title}>Laii Van Hieu</Title>
+                              <Caption style={styles.caption}>@hieu.pro</Caption> 
+                            </View>
                         </View>
                    </View>
+                  <Drawer.Section style={styles.drawerSection}>
+                   <DrawerItem
+                      icon={({color,size}) =>(
+                          <Icon
+                              name='home-outline'
+                              color={color}
+                              size={size}
+                          />)
+                      }
+                      label="Home"
+                      onPress={()=>{props.navigation.navigate('Home')}}
+                    />
+                    <DrawerItem
+                      icon={({color,size}) =>(
+                          <Icon
+                              name='account-settings-outline'
+                              color={color}
+                              size={size}
+                          />)
+                      }
+                      label="Settings"
+                      onPress={()=>{props.navigation.navigate('Setting')}}
+                    />       
+                   </Drawer.Section>
+                   <Drawer.Section title='Preferences'>
+                      <TouchableRipple onPress={()=>toggleTheme()}>
+                        <View style={styles.preference}>
+                          <Text>Dark Theme</Text>
+                          <View pointerEvents='none'>
+                           <Switch value={isDarkTheme}/> 
+                          </View>
+                        </View>
+                      </TouchableRipple>
+                   </Drawer.Section>
                 </View>
             </DrawerContentScrollView>
             <Drawer.Section style={styles.bottomDrawerSection}>
