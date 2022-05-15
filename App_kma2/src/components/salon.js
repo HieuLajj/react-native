@@ -22,7 +22,7 @@ const images=[
 ]
 
 const data=[
-    {key: 0,name:"Clothes",total:111},
+    {key: 0,name:"Clothes",total:111,},
     {key: 1,name:"Food",total:222},
     {key: 2,name:"Medical",total:333},
     {key: 3,name:"Taxi",total:444},
