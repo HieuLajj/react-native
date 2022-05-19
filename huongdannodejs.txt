@@ -2,3 +2,5 @@ npm init
 npm install --save-exact express@4.18.1
 node server.js
 npm i nodemon --save-dev
+npm install express-handlebars
+npm run-watch

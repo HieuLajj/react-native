@@ -45,7 +45,8 @@ import { DrawerContent } from './src/components/DrawerContent';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
-
+import {Provider} from 'react-redux';
+import { store } from './src/redux/store';
 
 function MyTabs() {
   return (
@@ -75,6 +76,7 @@ function MyTabs() {
 
 function MyDraws(){
   return(
+    <Provider store={store}>
     <Drawer.Navigator  
         initialRouteName="Home"
         screenOptions={{
@@ -85,6 +87,7 @@ function MyDraws(){
       <Drawer.Screen name="MyTab" component={MyTabs}/>
       <Drawer.Screen name="Setting" component={SettingScreen}/>
     </Drawer.Navigator>
+    </Provider>
   )
 }
 
@@ -95,7 +98,8 @@ const App= () => {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
   return (
-  <NavigationContainer>
+  <Provider store={store}>
+    <NavigationContainer>
      <Stack.Navigator 
       initialRouteName="Login"
       screenOptions={{
@@ -110,7 +114,8 @@ const App= () => {
         <Stack.Screen name="MyDraw" component={MyDraws}/>
       </Stack.Navigator>
 
-  </NavigationContainer>
+    </NavigationContainer>
+  </Provider>
   );
 };
 

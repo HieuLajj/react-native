@@ -1,0 +1,17 @@
+{
+  "name": "expenceTracker",
+  "displayName": "expenceTracker",
+  "expo": {
+    "name": "expenceTracker",
+    "slug": "expenceTracker",
+    "version": "1.0.0",
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}

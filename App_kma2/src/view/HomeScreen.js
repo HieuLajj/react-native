@@ -121,36 +121,7 @@ export default HomeScreen =( {navigation,route} )=>{
       </View>
     </View>
     );
-     {/* <SelectDropdown
-            data={countriesWithFlags}
-            onSelect={(selectedItem, index) => {
-              console.log(selectedItem, index);
-            }}
-            buttonStyle={styles.dropdown3BtnStyle}
-            renderCustomizedButtonChild={(selectedItem, index) => {
-              return (
-                <View style={styles.dropdown3BtnChildStyle}>
-                  {selectedItem ? (
-                    <Image source={selectedItem.image} style={styles.dropdown3BtnImage} />
-                  ) : (
-                    <Ionicons name="cart-outline" color={colors.brown4} size={32} />
-                  )}
-                  <Text style={styles.dropdown3BtnTxt}>{selectedItem ? selectedItem.title : 'Select'}</Text>
-                  <FontAwesome name="chevron-down" color={colors.brown4} size={18} />
-                </View>
-              );
-            }}
-            dropdownStyle={styles.dropdown3DropdownStyle}
-            rowStyle={styles.dropdown3RowStyle}
-            renderCustomizedRowChild={(item, index) => {
-              return (
-                <View style={styles.dropdown3RowChildStyle}>
-                  <Image source={item.image} style={styles.dropdownRowImage} />
-                  <Text style={styles.dropdown3RowTxt}>{item.title}</Text>
-                </View>
-              );
-            }}
-          /> */}
+     
 
 }
 const styles = StyleSheet.create({
