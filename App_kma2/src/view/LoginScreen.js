@@ -3,6 +3,7 @@ import styless from '../components/styless';
 import Input from '../components/Input'
 import Button2 from '../components/Button2'
 import colors from '../components/colors'
+import client from '../api/client';
 import {
     Image,
     StyleSheet,
@@ -156,33 +157,45 @@ const GreenComponet = ({navigation}) => {
     };
 
     const validate = () => {
-        // Keyboard.dismiss();
-        // let isValid = true;
-        // if (!inputs.email) {
+        Keyboard.dismiss();
+        let isValid = true;
+        if (!inputs.email) {
     
-        //   handleError('Please input email', 'email');
-        //   isValid = false;
-        // }else{
-        //   let regex = new RegExp("([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\"\(\[\]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\[[\t -Z^-~]*])");
-        //   if(!regex.test(inputs.email)){
-        //     handleError('Please input a valid email', 'email');
-        //     isValid = false;
-        //   }
-        // }
-        // if (!inputs.password) {
-        //   handleError('Please input password', 'password');
-        //   isValid = false;
-        // } else if (inputs.password.length < 5) {
-        //   handleError('Min password length of 5', 'password');
-        //   isValid = false;
-        // }
-        // if (isValid) {
-          login();
-        //}
+          handleError('Please input email', 'email');
+          isValid = false;
+        }else{
+          let regex = new RegExp("([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\"\(\[\]!#-[^-~ \t]|(\\[\t -~]))+\")@([!#-'*+/-9=?A-Z^-~-]+(\.[!#-'*+/-9=?A-Z^-~-]+)*|\[[\t -Z^-~]*])");
+          if(!regex.test(inputs.email)){
+            handleError('Please input a valid email', 'email');
+            isValid = false;
+          }
+        }
+        if (!inputs.password) {
+          handleError('Please input password', 'password');
+          isValid = false;
+        } else if (inputs.password.length < 5) {
+          handleError('Min password length of 5', 'password');
+          isValid = false;
+        }
+        if (isValid) {
+          login(inputs);
+        }
     };
     
-    const login = () => {
-        navigation.navigate('MyDraw');
+    const login = async(inputs) => {
+        try {
+            console.log(inputs);
+            const res = await client.post('/laihieu/user/sign_in',{
+              ...inputs
+            }) 
+            console.log(res.data);
+            if(res.data.success){
+                navigation.navigate('MyDraw');
+            }          
+        } catch (error) {
+            console.log(error.message);
+            
+        }
     }
 
     return(

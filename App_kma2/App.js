@@ -1,5 +1,5 @@
 
-import React from 'react';
+import React, {useEffect} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -47,6 +47,8 @@ const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
 import {Provider} from 'react-redux';
 import { store } from './src/redux/store';
+import axios from 'axios'
+
 
 function MyTabs() {
   return (
@@ -92,8 +94,20 @@ function MyDraws(){
 }
 
 const App= () => {
-  const isDarkMode = useColorScheme() === 'dark';
+  const fetchApi = async ()=>{
+    try {
+      const res = await axios.get('http://192.168.1.235:8000/')
+      console.log(res.data)
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+  useEffect(()=>{
+     fetchApi()
+  },[])
 
+
+  const isDarkMode = useColorScheme() === 'dark';
   const backgroundStyle = {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
@@ -106,7 +120,6 @@ const App= () => {
         headerShown: false
       }}
       >
-
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen}/>
         <Stack.Screen name="SalonList" component={SalonListDentails}/>

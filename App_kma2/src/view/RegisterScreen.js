@@ -10,14 +10,16 @@ import { Colors } from 'react-native/Libraries/NewAppScreen';
 import Input from '../components/Input'
 import Button2 from '../components/Button2'
 import COLORS from '../components/colors';
+import client from '../api/client';
 
 export default RegisterScreen =( {navigation} )=>{
   const [inputs, setInputs] = useState({
     email: '',
-    fullname: '',
+    name: '',
     phone: '',
     password: '',
   });
+  //const {email,name,phone,password} = inputs;
   const [errors, setErrors] = useState({});
   const validate = () => {
     Keyboard.dismiss();
@@ -34,8 +36,8 @@ export default RegisterScreen =( {navigation} )=>{
       }
     }
 
-    if (!inputs.fullname) {
-      handleError('Please input fullname', 'fullname');
+    if (!inputs.name) {
+      handleError('Please input fullname', 'name');
       isValid = false;
     }
 
@@ -58,12 +60,18 @@ export default RegisterScreen =( {navigation} )=>{
       isValid = false;
     }
     if (isValid) {
-      register();
+      register(inputs);
     }
   };
 
-  const register = () => {
-    alert("laivanhieu");
+  const register = async (inputs) => {
+    console.log("hahaha");
+    console.log(inputs);
+    const res = await client.post('/laihieu/user/add_user',{
+      ...inputs
+    })
+    console.log(res.data);
+    alert("laivanhieu=>register");
   }
   const handleOnChange = (text,input) => {
     setInputs(prevState=>({...prevState,[input]:text}));
@@ -95,11 +103,11 @@ export default RegisterScreen =( {navigation} )=>{
           <Input 
             iconName="account-outline" 
             placeholder="Enter your fullname"
-            error={errors.fullname}
+            error={errors.name}
             onFocus={()=>{
-              handleError(null,'fullname');
+              handleError(null,'name');
             }}
-            onChangeText = {(text) => handleOnChange(text,'fullname')}
+            onChangeText = {(text) => handleOnChange(text,'name')}
           />
           <Input 
             keyboardType="numeric"
