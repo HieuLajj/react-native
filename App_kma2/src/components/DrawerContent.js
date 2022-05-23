@@ -1,10 +1,11 @@
 import React from 'react';
 import {Avatar,Title,Caption,Paragraph,Drawer,TouchableRipple,Switch} from 'react-native-paper'
 import {View, Text, StyleSheet} from 'react-native';
+import {useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer'
 export function DrawerContent(props){
-
+    const info = useSelector((state)=>state.personalInfo)
     const[isDarkTheme,setIsDarkTheme] = React.useState(false);
     const toggleTheme = () => {
       setIsDarkTheme(!isDarkTheme);
@@ -16,13 +17,13 @@ export function DrawerContent(props){
                    <View style={styles.userInfoSection}>
                         <View style={{flexDirection:'row', marginTop:15}}>
                             <Avatar.Image source={{
-                                  uri: 'https://sieupet.com/sites/default/files/pictures/images/1-1473150685951-5.jpg'
+                                  uri: info.avatar
                             }}
                             size={50}
                             />
                             <View style={{marginLeft:15,flexDirection:'column'}}>
-                              <Title style={styles.title}>Laii Van Hieu</Title>
-                              <Caption style={styles.caption}>@hieu.pro</Caption> 
+                              <Title style={styles.title}>{info.name}</Title>
+                              <Caption style={styles.caption}>{info.email}</Caption> 
                             </View>
                         </View>
                    </View>

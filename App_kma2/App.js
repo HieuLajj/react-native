@@ -48,6 +48,7 @@ const Drawer = createDrawerNavigator();
 import {Provider} from 'react-redux';
 import { store } from './src/redux/store';
 import axios from 'axios'
+import SettingScreen_Account from './src/view/SettingScreen_Account';
 
 
 function MyTabs() {
@@ -76,7 +77,10 @@ function MyTabs() {
   );
 }
 
-function MyDraws(){
+function MyDraws(props){
+  // const {token} = props.route.params;
+  // console.log("yone")
+  // console.log(token)
   return(
     <Provider store={store}>
     <Drawer.Navigator  
@@ -88,6 +92,7 @@ function MyDraws(){
        > 
       <Drawer.Screen name="MyTab" component={MyTabs}/>
       <Drawer.Screen name="Setting" component={SettingScreen}/>
+      <Drawer.Screen name="SettingAccount" component={SettingScreen_Account}/>
     </Drawer.Navigator>
     </Provider>
   )
@@ -105,7 +110,6 @@ const App= () => {
   useEffect(()=>{
      fetchApi()
   },[])
-
 
   const isDarkMode = useColorScheme() === 'dark';
   const backgroundStyle = {

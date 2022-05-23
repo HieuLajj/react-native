@@ -2,8 +2,9 @@ import React, {useState,useRef,useEffect} from 'react';
 import styless from '../components/styless';
 import Input from '../components/Input'
 import Button2 from '../components/Button2'
-import colors from '../components/colors'
 import client from '../api/client';
+import {updateEmail, updatePhone,updateName,updateToken,updateAvatar} from '../redux/actions/updateAction'
+import {useDispatch,useSelector} from 'react-redux';
 import {
     Image,
     StyleSheet,
@@ -143,7 +144,7 @@ const RedComponet = ({page,setPage,Animation_wave,navigation,Animation_wave_rese
 }
 
 const GreenComponet = ({navigation}) => {
-
+    const dispatch = useDispatch();
     const [inputs, setInputs] = useState({
         email: '',
         password: '',
@@ -184,14 +185,21 @@ const GreenComponet = ({navigation}) => {
     
     const login = async(inputs) => {
         try {
-            console.log(inputs);
-            const res = await client.post('/laihieu/user/sign_in',{
-              ...inputs
-            }) 
-            console.log(res.data);
-            if(res.data.success){
-                navigation.navigate('MyDraw');
-            }          
+           console.log(inputs);
+           const res = await client.post('/laihieu/user/sign_in',{
+             ...inputs
+           }) 
+           console.log(res.data);
+           dispatch(updateEmail(res.data.user.email))
+           dispatch(updatePhone(res.data.user.phone))
+           dispatch(updateName(res.data.user.name))
+           res.data.user.avatar ?  dispatch(updateAvatar(res.data.user.avatar)) : dispatch(updateAvatar('https://sieupet.com/sites/default/files/pictures/images/1-1473150685951-5.jpg'))
+           dispatch(updateToken(res.data.token))
+           
+
+           if(res.data.success){
+                navigation.navigate('MyDraw',{token:res.data.token});
+          }          
         } catch (error) {
             console.log(error.message);
             
@@ -244,7 +252,7 @@ const BlueComponet = () => {
                 ]}
                 animated={true}
              />
-  </View>
+        </View>
     );
 }
 const styles = StyleSheet.create({
