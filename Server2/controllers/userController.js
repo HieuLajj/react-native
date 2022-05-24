@@ -27,7 +27,9 @@ const userController = {
     //SIGN IN
     userSignIn: async(req,res)=>{
         const { email, password } = req.body;
-
+        console.log("ffwfaewfa");
+       // req.profile="hieu"
+      //  console.log(req.profile);
         const user = await User.findOne({ email });
       
         if (!user)
@@ -45,6 +47,7 @@ const userController = {
         const token =  jwt.sign({userId: user._id}, process.env.JWT_SECRET, {expiresIn:'1d'});
 
         const userInfo = {
+          id: user.id,
           name: user.name,
           email: user.email,
           phone: user.phone,

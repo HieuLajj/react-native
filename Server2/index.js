@@ -13,6 +13,7 @@ app.use(cors());
 app.use(morgan("common"));
 const User = require('./models/user')
 const userRoute = require("./routes/user_route");
+const expenseRoute = require("./routes/expense_route")
 //require('./models/User');
 dotenv.config();
 
@@ -22,16 +23,22 @@ app.get('/',(req,res)=>{
 })
 
 
-const test = async (email,password)=>{
-  const user = await User.findOne({email:email});
-  const result = await user.comparePassword(password);
-  console.log(result);
-}
-test('laivanhieu@gmail.com','12112000');
+
+// const test = async (email,password)=>{
+//   const user = await User.findOne({email:email});
+//   if (!user) {
+//     throw new CustomError.UserNotFound();
+//   }
+//   const result = await user.comparePassword(password);
+//   console.log(result);
+// }
+// test('laivanhieu@gmail.com','12112000');
 
 
 //ROUTER
 app.use("/laihieu/user",userRoute);
+app.use("/laihieu/expense",expenseRoute);
+
 
 
 // app.post('/create-ser',userController.add_user);

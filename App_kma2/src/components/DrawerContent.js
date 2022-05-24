@@ -1,6 +1,6 @@
 import React from 'react';
 import {Avatar,Title,Caption,Paragraph,Drawer,TouchableRipple,Switch} from 'react-native-paper'
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet,ImageBackground} from 'react-native';
 import {useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer'
@@ -15,6 +15,14 @@ export function DrawerContent(props){
             <DrawerContentScrollView {...props}>
                 <View style={styles.drawerContent}>
                    <View style={styles.userInfoSection}>
+                    <ImageBackground
+                      source={
+                        require('../images/anhdep.jpg')
+                      }
+
+                      // image: require('../images/image_select/ic_Clothes.png')
+                      style={{flex:1, paddingLeft: 20,}}>
+                     
                         <View style={{flexDirection:'row', marginTop:15}}>
                             <Avatar.Image source={{
                                   uri: info.avatar
@@ -25,7 +33,8 @@ export function DrawerContent(props){
                               <Title style={styles.title}>{info.name}</Title>
                               <Caption style={styles.caption}>{info.email}</Caption> 
                             </View>
-                        </View>
+                        </View> 
+                    </ImageBackground>
                    </View>
                   <Drawer.Section style={styles.drawerSection}>
                    <DrawerItem
@@ -84,7 +93,7 @@ const styles = StyleSheet.create({
       flex: 1,
     },
     userInfoSection: {
-      paddingLeft: 20,
+      flex:1,
     },
     title: {
       fontSize: 16,

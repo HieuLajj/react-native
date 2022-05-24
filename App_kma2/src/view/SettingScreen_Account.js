@@ -7,7 +7,9 @@ import FontAwesome  from 'react-native-vector-icons/FontAwesome'
 import Feather from 'react-native-vector-icons/Feather';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Animated from 'react-native-reanimated';
+import Input from '../components/Input';
 import client from '../api/client'
+import Button2 from '../components/Button2';
 import {
   ImageBackground,
   StyleSheet,
@@ -118,7 +120,7 @@ const SettingScreen_Account= (props) => {
   return (
     
 
-    <View style={{flex:1}}>
+    <View style={{flex:1,backgroundColor:COLORS.brown1}}>
     <BottomSheet
         snapPoints={[330,0]}
         ref={sheetRef}
@@ -132,7 +134,7 @@ const SettingScreen_Account= (props) => {
        <View style={{margin:20}}>
            <View style={{alignItems:'center'}}>
           
-               <TouchableOpacity onPress={() => sheetRef.current.snapTo(0)}>
+              <TouchableOpacity onPress={() => sheetRef.current.snapTo(0)}>
           
 
                     <View style={{
@@ -167,14 +169,37 @@ const SettingScreen_Account= (props) => {
                         </View>
                     </ImageBackground>
                   </View>
-               </TouchableOpacity >
-              
-               <TouchableOpacity  style={styles.panelButton}
-                                  onPress={()=>{uploadProfileImage({image})}}
-               >
+              </TouchableOpacity >
+              <View style={{paddingRight:25}} >
+                <Input 
+                  iconName="email-outline" 
+                  placeholder="Enter your email address"
+                />
+                <Input 
+                  iconName="account-outline" 
+                  placeholder="Enter your fullname"
+                />
+                <Input 
+                  keyboardType="numeric"
+                  iconName="phone-outline" 
+                  placeholder="Enter your phone number"
+                />
+                <Input 
+                  iconName="lock-outline" 
+                  placeholder="Enter your password"
+                 />
+                 <View style={{marginTop:20}}>
+                   <Button2 title="Submit" onPress={()=>{uploadProfileImage({image})}}/>
+                 </View>
+                 
+              </View>
+             
+
+               {/* <TouchableOpacity  style={styles.panelButton}
+                                  onPress={()=>{}}
+               >      
                  <Text>Submit</Text>
-               </TouchableOpacity>
-               <Text>{progress}</Text>
+               </TouchableOpacity>  */}
            </View>
         </View>
     </View>

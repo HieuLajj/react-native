@@ -189,6 +189,8 @@ const GreenComponet = ({navigation}) => {
            const res = await client.post('/laihieu/user/sign_in',{
              ...inputs
            }) 
+           console.log("bbbb");
+          
            console.log(res.data);
            dispatch(updateEmail(res.data.user.email))
            dispatch(updatePhone(res.data.user.phone))
