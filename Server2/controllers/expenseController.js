@@ -1,7 +1,7 @@
+const { response } = require("express");
 const Expense = require("../models/expense");
 const expenseController = {
      
-
     //create expense 
     create : async (req, res) => {
       console.log(req.user._id);
@@ -34,12 +34,21 @@ const expenseController = {
       console.log(req.user._id);
       try {
         const exp = await Expense.find({'user':req.user.id});
-        res.json(exp);
+        res.json({success: true, exp});
       } catch (error) {
         res.json(error);
       }
-    }
+    },
     
+    //update
+    update: async (req,res) => {
+      try {
+        const {id} = req?.params;
+        res.json(id);
+      } catch (error) {
+        res.json(error)
+      }
+    },   
 }
 
 module.exports = expenseController;

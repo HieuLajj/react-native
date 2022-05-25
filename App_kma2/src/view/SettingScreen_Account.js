@@ -1,6 +1,6 @@
 
 import React,{useEffect,useState} from 'react';
-import {useDispatch,useSelector} from 'react-redux';
+import {useSelector} from 'react-redux';
 import {updateEmail} from '../redux/actions/updateAction'
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons' 
 import FontAwesome  from 'react-native-vector-icons/FontAwesome'
@@ -147,7 +147,7 @@ const SettingScreen_Account= (props) => {
                     }}>
                     <ImageBackground
                      source={{
-                        uri: image,
+                        uri: info.avatar,
                      }}
                      style={{height:100,width:100}}
                      imageStyle={{borderRadius:15}}
@@ -173,16 +173,16 @@ const SettingScreen_Account= (props) => {
               <View style={{paddingRight:25}} >
                 <Input 
                   iconName="email-outline" 
-                  placeholder="Enter your email address"
+                  placeholder= {info.email}
                 />
                 <Input 
                   iconName="account-outline" 
-                  placeholder="Enter your fullname"
+                  placeholder= {info.name}
                 />
                 <Input 
                   keyboardType="numeric"
                   iconName="phone-outline" 
-                  placeholder="Enter your phone number"
+                  placeholder= {info.phone}
                 />
                 <Input 
                   iconName="lock-outline" 

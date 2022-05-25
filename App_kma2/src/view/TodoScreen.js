@@ -1,31 +1,25 @@
 import React, {useState,useEffect} from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import COLORS from '../components/colors';
-import icons from '../components/icons';
 import {Calendar} from 'react-native-calendars'
 import salon from '../components/salon'
-import salon2 from '../components/salon2';
-import Swipeable from 'react-native-gesture-handler/Swipeable'
 import ItemBox from '../components/ItemBox';
+import {useDispatch,useSelector} from 'react-redux';
 import {
-  SafeAreaView,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
-  TouchableHighlight,
   FlatList,
-  Button,
   Image,
-  LogBox,
+  RefreshControl,
 } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import { color } from 'react-native-reanimated';
+import {listbyuser} from '../api/api_expense'
 import {VictoryPie, VictoryTheme} from 'victory-native';
-import styless from '../components/styless'
-import { unstable_setLogListeners } from 'react-native/Libraries/Utilities/differ/deepDiffer';
+import styless from '../components/styless';
+import {colors,images2} from '../components/salon2';
+
 
 
 const TodoScreen= () => {
@@ -34,11 +28,23 @@ const TodoScreen= () => {
 
 //const [categories, setCategories] = React.useState(categoriesData)
 const [viewMode, setViewMode] = React.useState("chart")
-const[lists,setLists] = useState(salon2);
+const[lists,setLists] = useState([]);
 const [selectedCategory, setSelectedCategory] = React.useState(null)
+const info = useSelector((state)=>state.personalInfo)
+const [refreshControl,setRefreshControl] = useState(false)
+const [expenses, setExpenses] = useState([])
+
 useEffect(() => {
-  LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+  // LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+  listbyuser(info.token).then((data)=>{
+  setLists(data.exp.map((item,index)=>({
+    ...item,
+    color: colors[index%colors.length],
+    image: images2[item.title],
+  })))
+  })
 }, [])
+
   function renderCategoryHeaderSection(){
     return(
       <View style={{flexDirection:'row', padding: 10,
@@ -104,13 +110,27 @@ useEffect(() => {
       <View>
         <FlatList
             data={lists}
-            keyExtractor = {item => item.key}
+            keyExtractor = {item => item._id}
             contentContainerStyle={{padding:5,paddingBottom:20,}}
             renderItem={({item,index})=>{
                return <ItemBox data={item} 
                handleDelete={()=>deleteItem(index)}
               />
             }}
+            refreshControl = {
+              <RefreshControl refreshing = {refreshControl} onRefresh={()=>{
+                setRefreshControl(true)
+                listbyuser(info.token).then((data)=>{
+                  setLists(data.exp.map((item,index)=>({
+                    ...item,
+                    color: colors[index%colors.length],
+                    image: images2[item.title],
+                  })))
+                  })
+                setRefreshControl(false)
+              }} colors={['red']}
+              />
+            }
             />
       </View>
     )
@@ -232,28 +252,31 @@ function setSelectCategoryByName(name) {
   return (
     <View style={{flex:1,backgroundColor:COLORS.brown1}}>
        {renderCategoryHeaderSection()}
-    <View>
-      <ScrollView contentContainerStyle={{paddingBottom:60}}>
+    <View style={{flex:1}}>
         {
           viewMode == "list" &&
-          <View>
+          <View  style={{flex:1}}>
            {renderCategoryList()}
           </View>
         }
+            
         {
           viewMode == "chart" &&
-          <View>
-            {renderChart()}
+          <ScrollView>
+          <View  style={{flex:1}}>
+            {renderChart()}    
             {renderExpenseSumary()}
+          
           </View>
-        }  
+           </ScrollView> 
+        } 
+       
         {
           viewMode =="calendar" &&
-          <View>
+          <View  style={{flex:1}}>
             {renderCalendar()}
           </View>
         }
-      </ScrollView>
     </View>
   </View>
   );

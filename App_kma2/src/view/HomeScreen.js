@@ -1,46 +1,24 @@
 import React, {Component,useRef,useEffect,useState} from 'react';
 import {
-  SafeAreaView,
   ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
-  TouchableHighlight,
   TextInput,
   TouchableOpacity,
-  TouchableWithoutFeedback,
   Dimensions,
-  Keyboard, 
-  Animated,
-  Button,
   Image,
   state,
   FlatList,
 } from 'react-native';
 const {width} = Dimensions.get('window');
 import colors from '../components/colors'
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import {faker} from '@faker-js/faker'
-import SelectDropdown from 'react-native-select-dropdown'
 import salon from '../components/salon'
 const TODAY = 'TODAY';
 const MONTH = 'MONTH';
 export default HomeScreen =( {navigation,route} )=>{
   const [day, setday] = useState(TODAY);
 
-  const countriesWithFlags = [
-    {title: 'Clothes', image: require('../images/image_select/ic_Clothes.png')},
-    {title: 'Food', image: require('../images/image_select/ic_Food.png')},
-    {title: 'Medical', image: require('../images/image_select/ic_medical.png')},
-    {title: 'Taxi', image: require('../images/image_select/ic_taxi.png')},
-    {title: 'Other', image: require('../images/image_select/ic_working.png')},
-    
-  ];
-  const SPACING =20;
-  const AVATAR_SIZE = 70;
   return (
     <View style={styles.container}>
       <View style={{height:"25%"}}>
@@ -140,8 +118,6 @@ const styles = StyleSheet.create({
     fontWeight: '700'
   },
   body : {
-    // height: '100%',
-    // width : '100%',
     flex: 1,
     backgroundColor: colors.white,
     borderTopLeftRadius: 30,
@@ -150,8 +126,6 @@ const styles = StyleSheet.create({
   body_title : {
     height:45,
     flexDirection: 'row',
-    //paddingTop: 0,
-    //padding: 20,
     paddingLeft:20,
     paddingBottom:5,
     justifyContent:'space-between',
@@ -174,15 +148,6 @@ const styles = StyleSheet.create({
     flex:1,
     flexGrow:1,
   },
-
-
-
-
-
-
-
-
-
   dropdown3BtnStyle: {
     width: '50%',
     height: 50,

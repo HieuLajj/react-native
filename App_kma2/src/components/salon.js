@@ -1,6 +1,4 @@
-import faker from '@faker-js/faker'
 import niceColors from 'nice-color-palettes'
-faker.seed(1);
 const colors=[
     ...niceColors[1].slice(1, niceColors[1].length),
     ...niceColors[55].slice(0,3),

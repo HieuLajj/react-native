@@ -9,7 +9,6 @@ import {
     Image,
     StyleSheet,
     Text,
-    useColorScheme,
     View,
     TouchableHighlight,
     Button,
@@ -148,8 +147,8 @@ const GreenComponet = ({navigation}) => {
     const [inputs, setInputs] = useState({
         email: '',
         password: '',
-      });
-      const [errors, setErrors] = useState({});
+    });
+    const [errors, setErrors] = useState({});
     const handleOnChange = (text,input) => {
         setInputs(prevState=>({...prevState,[input]:text}));
     };
@@ -356,4 +355,4 @@ const styles = StyleSheet.create({
         overflow: 'hidden',
         backgroundColor: '#FCDEC0',
     },
-  });
+});

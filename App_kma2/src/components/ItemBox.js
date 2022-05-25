@@ -63,15 +63,15 @@ const ItemBox = (props)=>{
                     borderRadius:10,}]}/>
                   <View style={{justifyContent:'center', alignItems:'center',flexDirection:'row'}}>
                     <View style={{width:50,justifyContent:'center', alignItems:'center'}}>
-                      <Text>{props.data.name}</Text>
+                      <Text>{props.data.title}</Text>
                       <Image source={props.data.image} style={{height:30,width:30, resizeMode: 'contain',}}/>
                     </View>
                     <View style={{marginLeft:10}}>
-                      <Text style={{fontSize:18,fontWeight:'bold'}}>{props.data.note}</Text>
-                      <Text>{props.data.day}</Text>
+                      <Text style={{fontSize:18,fontWeight:'bold'}}>{props.data.description}</Text>
+                      <Text>{props.data.created}</Text>
                     </View>
                   </View>
-                  <Text>-{props.data.total}</Text>
+                  <Text>-{props.data.amount}</Text>
               </View>
               </View>
             </Swipeable> 

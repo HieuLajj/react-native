@@ -1,18 +1,20 @@
 
-import React from 'react';
+import React,{useState} from 'react';
 import COLORS from '../components/colors';
+import {useDispatch,useSelector} from 'react-redux';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import SelectDropdown from 'react-native-select-dropdown';
+import client from '../api/client';
+import {addExpense,listbyuser} from '../api/api_expense';
+
+import {doidulieu} from '../components/salon2'
+
+
 import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
   StyleSheet,
   Text,
-  useColorScheme,
   View,
-  TouchableHighlight,
   TouchableOpacity,
   TextInput,
   Image,
@@ -21,6 +23,15 @@ import {
 
 
 const AddScreen= ({navigation}) => {
+  const info = useSelector((state)=>state.personalInfo)
+  const [inputs, setInputs] = useState({
+    title: 'Other',
+    description: '',
+    amount:''
+  });
+  const handleOnChange = (text,input) => {
+    setInputs(prevState=>({...prevState,[input]:text}));
+  };
   const countriesWithFlags = [
     {title: 'Clothes', image: require('../images/image_select/ic_Clothes.png')},
     {title: 'Food', image: require('../images/image_select/ic_Food.png')},
@@ -29,6 +40,32 @@ const AddScreen= ({navigation}) => {
     {title: 'Other', image: require('../images/image_select/ic_working.png')},
     
   ];
+  // const addExpense = async(inputs) => {
+  //   console.log(inputs)
+  //   const config = {
+  //     headers: {
+  //       Authorization: `jwt ${info.token}`
+  //     },
+  //   };
+  //   try {
+  //     const res = await client.post('/laihieu/expense/add_expense'
+  //     ,
+  //     {
+  //       title: inputs.title,
+  //       description: inputs.description,
+  //       amount: inputs.amount,
+  //     }
+  //     ,
+  //     config
+  //     );
+  //     if (res.data.success){
+  //       console.log("update anh thanh cong")
+  //     }  
+  //     console.log("ok fine")
+  //   } catch (error) {
+  //     console.log(error.message);
+  //   }
+  // }
   return (
       <View style={styles.container}>
         <View style={{height:'10%',}}>
@@ -42,10 +79,10 @@ const AddScreen= ({navigation}) => {
         }}>
           <View style={{flexDirection:'row',justifyContent:'space-between',padding:20}}>
             <TouchableOpacity onPress={()=>navigation.navigate('Home')}>
-              <FontAwesome name='times' size={40} color={COLORS.black}></FontAwesome>
+              <FontAwesome name='times' size={40} color={COLORS.brown4}></FontAwesome>
             </TouchableOpacity>
-            <TouchableOpacity>
-              <FontAwesome name='thumbs-up' size={40} color={COLORS.black}></FontAwesome>
+            <TouchableOpacity onPress={()=>{addExpense(info.token,inputs);}}>
+              <FontAwesome name='thumbs-up' size={40} color={COLORS.brown4}></FontAwesome>
             </TouchableOpacity>         
           </View>
           <View style={{flexDirection:'row',paddingLeft:20,alignItems:'center'}}>
@@ -70,9 +107,13 @@ const AddScreen= ({navigation}) => {
                 fontSize:30,
                 marginLeft: 10,
                 padding: 10,
+                width: '63%',
                 borderBottomWidth:2,
-                borderBottomColor:COLORS.darkBlue,
+                borderBottomColor:COLORS.brown2,
               }}
+              multiline={true}
+              numberOfLines={1}
+              onChangeText = {(text) => handleOnChange(text,'amount')}
             ></TextInput>
           </View>
           
@@ -98,7 +139,9 @@ const AddScreen= ({navigation}) => {
               
                 data={countriesWithFlags}
                 onSelect={(selectedItem, index) => {
-                  console.log(selectedItem, index);
+                  //console.log(selectedItem, index);
+                  console.log(selectedItem.title);
+                  handleOnChange(selectedItem.title,'title')
                 }}
                 buttonStyle={styles.dropdown3BtnStyle}
                 renderCustomizedButtonChild={(selectedItem, index) => {
@@ -125,8 +168,7 @@ const AddScreen= ({navigation}) => {
                   );
                 }}
               />
-              </View>
-            
+              </View>            
             </View>
             
             <View style={{flexDirection:'row',paddingLeft:20,alignItems:'center',paddingTop:50}}>
@@ -136,27 +178,35 @@ const AddScreen= ({navigation}) => {
               alignItems:'center',
               justifyContent:'center',
             }}>
-               <FontAwesome name='sticky-note' size={40} color={COLORS.black}></FontAwesome>
+               <FontAwesome name='sticky-note' size={40} color={COLORS.brown3}></FontAwesome>
             </View>
             <TextInput 
               placeholder='note'
               style={{
-                fontSize:30,
-                marginLeft: 10,
-                padding: 10,
-                borderBottomWidth:2,
-                borderBottomColor:COLORS.darkBlue,
+                // fontSize:20,
+                // marginLeft: 10,
+                // padding: 10,
+                // borderBottomWidth:2,
+                // borderBottomColor:COLORS.brown2,
+                height:100,  
+                width:'63%',
+                padding:10,
+                borderColor: COLORS.brown2,
+                borderWidth:1, 
+                marginLeft:10, 
+               
               }}
+              multiline= {true}
+              borderBottomWidth={3}
+              borderLeftWidth={3}
+              editable={true}
+              numberOfLines={4}
+          
+          
+              onChangeText = {(text) => handleOnChange(text,'description')}
             ></TextInput>
+          
           </View>
-          
-
-
-          
-
-
-
-
         </View>
       </View>
   );
@@ -168,13 +218,13 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.brown2,
   },
   dropdown3BtnStyle: {
-    width: '50%',
+    width: '65%',
     height: 50,
     backgroundColor: COLORS.white,
     paddingHorizontal: 0,
     borderWidth: 1,
     borderRadius: 5,
-    borderColor: COLORS.darkBlue,
+    borderColor: COLORS.brown2,
   },
   dropdown3BtnChildStyle: {
     flex: 1,
@@ -194,7 +244,7 @@ const styles = StyleSheet.create({
   dropdown3DropdownStyle: {backgroundColor: 'slategray'},
   dropdown3RowStyle: {
     backgroundColor:COLORS.white,
-    borderBottomColor: COLORS.darkBlue,
+    borderBottomColor: COLORS.brown2,
     height: 50,
   },
   dropdown3RowChildStyle: {
