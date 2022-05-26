@@ -37,35 +37,8 @@ const AddScreen= ({navigation}) => {
     {title: 'Food', image: require('../images/image_select/ic_Food.png')},
     {title: 'Medical', image: require('../images/image_select/ic_medical.png')},
     {title: 'Taxi', image: require('../images/image_select/ic_taxi.png')},
-    {title: 'Other', image: require('../images/image_select/ic_working.png')},
-    
+    {title: 'Other', image: require('../images/image_select/ic_working.png')},  
   ];
-  // const addExpense = async(inputs) => {
-  //   console.log(inputs)
-  //   const config = {
-  //     headers: {
-  //       Authorization: `jwt ${info.token}`
-  //     },
-  //   };
-  //   try {
-  //     const res = await client.post('/laihieu/expense/add_expense'
-  //     ,
-  //     {
-  //       title: inputs.title,
-  //       description: inputs.description,
-  //       amount: inputs.amount,
-  //     }
-  //     ,
-  //     config
-  //     );
-  //     if (res.data.success){
-  //       console.log("update anh thanh cong")
-  //     }  
-  //     console.log("ok fine")
-  //   } catch (error) {
-  //     console.log(error.message);
-  //   }
-  // }
   return (
       <View style={styles.container}>
         <View style={{height:'10%',}}>

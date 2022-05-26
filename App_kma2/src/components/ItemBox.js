@@ -45,7 +45,7 @@ const ItemBox = (props)=>{
         });
 
         return(
-            <TouchableOpacity style={styles.deleteBox}>
+            <TouchableOpacity onPress={props.handleUpdate} style={styles.deleteBox}>
                 <Animated.View style={{transform:[{scale:scale}]}}>
                 <FontAwesome name='exchange' size={40} color={COLORS.black}></FontAwesome>
                 </Animated.View>

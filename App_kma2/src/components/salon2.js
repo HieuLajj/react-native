@@ -12,6 +12,13 @@ const colors=[
 //     {image: require('../images/image_select/ic_taxi.png')},
 //     {image: require('../images/image_select/ic_working.png')},
 // ]
+const countriesWithFlags = [
+    {title: 'Clothes', image: require('../images/image_select/ic_Clothes.png')},
+    {title: 'Food', image: require('../images/image_select/ic_Food.png')},
+    {title: 'Medical', image: require('../images/image_select/ic_medical.png')},
+    {title: 'Taxi', image: require('../images/image_select/ic_taxi.png')},
+    {title: 'Other', image: require('../images/image_select/ic_working.png')},  
+  ];
 const images=[
     require('../images/image_select/ic_Clothes.png'),
     require('../images/image_select/ic_Food.png'),
@@ -52,4 +59,5 @@ export default data2.map((item,index)=>({
 export{
     colors,
     images2,
+    countriesWithFlags
 }

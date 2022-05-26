@@ -48,7 +48,18 @@ const expenseController = {
       } catch (error) {
         res.json(error)
       }
-    },   
+    }, 
+    
+    //delete
+    delete: async (req,res) =>{
+        const {id} = req?.params;
+        try {
+          const exp = await Expense.findByIdAndDelete(id);
+          res.json({success: true, exp});
+        } catch (error) {
+          res.json(error);
+        }
+    },
 }
 
 module.exports = expenseController;

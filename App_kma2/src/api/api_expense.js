@@ -27,6 +27,27 @@ const addExpense = async(id,inputs) => {
     }
 }
 
+const deleteExpense = async(id,id_item)=>{
+  const config = {
+    headers: {
+      Authorization: `jwt ${id}`
+    },
+   };
+   try {
+    const res = await client.delete(`/laihieu/expense/delete/${id_item}`
+    ,
+    config
+    );
+    if (res.data.success){
+      console.log("xoa thanh ong")
+    }  
+    return res.json;
+   // console.log(data3)
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
 const listbyuser = async(id)=>{
     const config = {
         headers: {
@@ -48,8 +69,9 @@ const listbyuser = async(id)=>{
       } catch (error) {
         console.log(error.message);
       }
-}
+  }
 export {
     addExpense,
-    listbyuser
+    listbyuser,
+    deleteExpense,
 }
