@@ -42,9 +42,19 @@ const expenseController = {
     
     //update
     update: async (req,res) => {
+      const {id} = req?.params;
+      const { description, title, amount } = req.body;
       try {
-        const {id} = req?.params;
-        res.json(id);
+        const exp = await Expense.findByIdAndUpdate(
+          id,
+          {
+            description,
+            title,
+            amount,
+          },
+          { new: true, runValidators: true }
+          )
+          res.json({success: true, exp});
       } catch (error) {
         res.json(error)
       }

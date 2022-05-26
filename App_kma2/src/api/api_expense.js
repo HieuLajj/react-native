@@ -48,6 +48,32 @@ const deleteExpense = async(id,id_item)=>{
   }
 }
 
+const updateExpense  = async(id,id_item,inputs)=>{
+  const config = {
+    headers: {
+      Authorization: `jwt ${id}`
+    },
+   };
+   try {
+    const res = await client.put(`/laihieu/expense/update/${id_item}`
+    ,
+    {
+      title: inputs.title,
+      description: inputs.description,
+      amount: inputs.amount,
+    },
+    config
+    );
+    if (res.data.success){
+      console.log("sua thanh ong")
+    }  
+    return res.json;
+   // console.log(data3)
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
 const listbyuser = async(id)=>{
     const config = {
         headers: {
@@ -74,4 +100,5 @@ export {
     addExpense,
     listbyuser,
     deleteExpense,
+    updateExpense,
 }

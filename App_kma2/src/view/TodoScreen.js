@@ -5,7 +5,6 @@ import {Calendar} from 'react-native-calendars'
 import salon from '../components/salon'
 import ItemBox from '../components/ItemBox';
 import {useDispatch,useSelector} from 'react-redux';
-import styles from 'react-date-range/dist/styles';
 import BottomSheet from 'reanimated-bottom-sheet';
 import {
   ScrollView,
@@ -19,7 +18,7 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import {listbyuser,deleteExpense} from '../api/api_expense'
+import {listbyuser,deleteExpense,updateExpense} from '../api/api_expense'
 import {VictoryPie, VictoryTheme} from 'victory-native';
 import styless from '../components/styless';
 import {colors,images2,countriesWithFlags} from '../components/salon2';
@@ -29,21 +28,15 @@ import SelectDropdown from 'react-native-select-dropdown';
 
 
 const TodoScreen= () => {
-
-//const categoryListHeightAnimationValue = useRef(new Animated.Value(115)).current;
-
-//const [categories, setCategories] = React.useState(categoriesData)
 const [viewMode, setViewMode] = React.useState("chart")
 const[lists,setLists] = useState([]);
 const [selectedCategory, setSelectedCategory] = React.useState(null)
 const info = useSelector((state)=>state.personalInfo)
 const [refreshControl,setRefreshControl] = useState(false)
-const [expenses, setExpenses] = useState([])
 const sheetRef = React.useRef(null);
 const fall = new Animated.Value(1);
 
 useEffect(() => {
-  // LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
   listbyuser(info.token).then((data)=>{
   setLists(data.exp.map((item,index)=>({
     ...item,
@@ -52,6 +45,16 @@ useEffect(() => {
   })))
   })
 }, [])
+
+const [inputs, setInputs] = useState({
+  title: 'Other',
+  description: '',
+  amount:''
+});
+const [id_update, setid] = useState()
+const handleOnChange = (text,input) => {
+  setInputs(prevState=>({...prevState,[input]:text}));
+};
 
   function renderCategoryHeaderSection(){
     return(
@@ -117,8 +120,9 @@ useEffect(() => {
       console.log(id)
       console.log(index)
     }
-    const updateItem = ()=>{
+    const updateItem = (id)=>{
       //console.log('hello')
+      setid(id)
       sheetRef.current.snapTo(0)
     }
     const renderInner = () =>(
@@ -138,7 +142,7 @@ useEffect(() => {
               }}
               multiline={true}
               numberOfLines={1}
-              //onChangeText = {(text) => handleOnChange(text,'amount')}
+              onChangeText = {(text) => handleOnChange(text,'amount')}
             ></TextInput>
             <Text>       
               <SelectDropdown         
@@ -146,7 +150,7 @@ useEffect(() => {
                 onSelect={(selectedItem, index) => {
                   //console.log(selectedItem, index);
                   console.log(selectedItem.title);
-                 // handleOnChange(selectedItem.title,'title')
+                  handleOnChange(selectedItem.title,'title')
               }}
                 buttonStyle={styles2.dropdown3BtnStyle}
                 renderCustomizedButtonChild={(selectedItem, index) => {
@@ -194,22 +198,21 @@ useEffect(() => {
               numberOfLines={2}
           
           
-              //onChangeText = {(text) => handleOnChange(text,'description')}
+              onChangeText = {(text) => handleOnChange(text,'description')}
               ></TextInput>
             </View>
             <View style={{flexDirection:'row',justifyContent:'space-between',marginTop:10}}>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={()=>{
+                console.log(id_update)
+                console.log(inputs)
+                updateExpense(info.token,id_update,inputs)
+                }}>
                 <Text style={{fontSize:20}}>Ok</Text>
               </TouchableOpacity>
-              <TouchableOpacity>
+              <TouchableOpacity onPress={() => sheetRef.current.snapTo(1)}>
                <Text style={{fontSize:20}}>Cancel</Text>
               </TouchableOpacity>
             </View>
-            {/* <TouchableOpacity
-                style={styles2.panelButton}
-                onPress={() => sheetRef.current.snapTo(1)}>
-                <Text style={styles2.panelButtonTitle}>Cancel</Text>
-            </TouchableOpacity> */}
         </View>
     );
     const renderHeader = ()=>(
@@ -240,7 +243,7 @@ useEffect(() => {
             renderItem={({item,index})=>{
                return <ItemBox data={item} 
                handleDelete={()=>deleteItem(item._id,index)}
-               handleUpdate={()=>updateItem()}
+               handleUpdate={()=>updateItem(item._id)}
               />
             }}
             refreshControl = {
