@@ -1,6 +1,6 @@
 import React, {Component,useRef,useEffect,useState} from 'react';
 import {
-  ScrollView,
+  RefreshControl,
   StyleSheet,
   Text,
   View,
@@ -11,13 +11,35 @@ import {
   state,
   FlatList,
 } from 'react-native';
-const {width} = Dimensions.get('window');
-import colors from '../components/colors'
-import salon from '../components/salon'
+import COLORS from '../components/colors'
+import {useSelector} from 'react-redux';
+import {byCategory} from '../api/api_expense'
+import {colors,images2,countriesWithFlags} from '../components/salon2';
 const TODAY = 'TODAY';
 const MONTH = 'MONTH';
 export default HomeScreen =( {navigation,route} )=>{
+  const[lists,setLists] = useState([]);
   const [day, setday] = useState(TODAY);
+  const [money,setMoney] = useState();
+  const [refreshControl,setRefreshControl] = useState(false)
+  const info = useSelector((state)=>state.personalInfo)
+  useEffect(() => {
+    console.log(info.token);
+    let a=0;
+    byCategory(info.token).then((data)=>{
+      setLists(data.exp.map((item,index)=>({
+        ...item,
+        color: colors[index%colors.length],
+        image: images2[item._id],
+        key:index,
+      })))
+      for (var key2 in lists){
+        //console.log(lists[key2].total);
+        a+=lists[key2].total
+      }
+      setMoney(a)
+    })
+  },[])
 
   return (
     <View style={styles.container}>
@@ -40,7 +62,7 @@ export default HomeScreen =( {navigation,route} )=>{
                 style={{
                   fontWeight: 'bold',
                   fontSize: 25,
-                  color:day === TODAY ? colors.blue: colors.black,
+                  color:day === TODAY ? COLORS.blue: COLORS.black,
                   opacity: day === TODAY ? 1 : 0.5,
                 }}
               >TODAY</Text>
@@ -58,7 +80,7 @@ export default HomeScreen =( {navigation,route} )=>{
                 style={{
                   fontWeight: 'bold',
                   fontSize: 25,
-                  color:day === MONTH ? colors.blue: colors.black,
+                  color:day === MONTH ? COLORS.blue: COLORS.black,
                   opacity: day === MONTH ? 1 : 0.5,
                 }}
               >MONTH</Text>
@@ -72,13 +94,13 @@ export default HomeScreen =( {navigation,route} )=>{
               color:"red",
               paddingRight:15,
             }}
-            >-1111</Text>
+            >{money}</Text>
           </View>
           
         </View>
         <View style={styles.list}>
           <FlatList
-            data={salon}
+            data={lists}
             keyExtractor = {item => item.key}
             contentContainerStyle={{padding:5,paddingBottom:20,}}
             renderItem={({item})=>{
@@ -87,39 +109,59 @@ export default HomeScreen =( {navigation,route} )=>{
                     <View style={[StyleSheet.absoluteFillObject,{backgroundColor:item.color,
                                   borderRadius:10,}]}/>
                     <View style={{justifyContent:'center', alignItems:'center'}}>
-                      <Text style={styles.name}>{item.name}</Text>
+                      <Text style={styles.name}>{item._id}</Text>
                       <Image source={item.image} style={styles.image}/>
                     </View>
                     <Text style={styles.text}>-{item.total}</Text>
                   </View>
               </TouchableOpacity>
             }}
+            refreshControl = {
+              <RefreshControl refreshing = {refreshControl} onRefresh={()=>{
+                setRefreshControl(true)
+                let a=0;
+                byCategory(info.token).then((data)=>{
+                  setLists(data.exp.map((item,index)=>({
+                    ...item,
+                    color: colors[index%colors.length],
+                    image: images2[item._id],
+                    key:index,
+                  })))
+                  for (var key2 in lists){
+                   //console.log(lists[key2].total);
+                   a+=lists[key2].total
+                  }
+                   setMoney(a)
+                  })
+                setRefreshControl(false)
+              }} colors={['red']}
+              />
+            }
             />
         </View>
       </View>
     </View>
     );
-     
-
+    
 }
 const styles = StyleSheet.create({
   container : {
     flex:1 ,
-    backgroundColor: colors.brown3,
+    backgroundColor: COLORS.brown3,
   },
   text_1 :{
-    color: colors.white,
+    color: COLORS.white,
     fontSize: 15,
     fontWeight: 'bold',
   },
   text_2 :{
-    color: colors.white,
+    color: COLORS.white,
     fontSize: 45,
     fontWeight: '700'
   },
   body : {
     flex: 1,
-    backgroundColor: colors.white,
+    backgroundColor: COLORS.white,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
   },
@@ -133,6 +175,7 @@ const styles = StyleSheet.create({
   name:{
     fontWeight:'700',
     fontSize:18,
+    color:COLORS.black,
   },
   image:{
     width: 60,
@@ -151,11 +194,11 @@ const styles = StyleSheet.create({
   dropdown3BtnStyle: {
     width: '50%',
     height: 50,
-    backgroundColor: colors.white,
+    backgroundColor: COLORS.white,
     paddingHorizontal: 0,
     borderWidth: 1,
     borderRadius: 5,
-    borderColor: colors.darkBlue,
+    borderColor: COLORS.darkBlue,
   },
   dropdown3BtnChildStyle: {
     flex: 1,
@@ -166,7 +209,7 @@ const styles = StyleSheet.create({
   },
   dropdown3BtnImage: {width: 45, height: 45, resizeMode: 'cover'},
   dropdown3BtnTxt: {
-    color: colors.brown4,
+    color: COLORS.brown4,
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 24,
@@ -174,8 +217,8 @@ const styles = StyleSheet.create({
   },
   dropdown3DropdownStyle: {backgroundColor: 'slategray'},
   dropdown3RowStyle: {
-    backgroundColor:colors.white,
-    borderBottomColor: colors.darkBlue,
+    backgroundColor:COLORS.white,
+    borderBottomColor: COLORS.darkBlue,
     height: 50,
   },
   dropdown3RowChildStyle: {
@@ -187,7 +230,7 @@ const styles = StyleSheet.create({
   },
   dropdownRowImage: {width: 45, height: 45, resizeMode: 'cover'},
   dropdown3RowTxt: {
-    color: colors.brown4,
+    color: COLORS.brown4,
     textAlign: 'center',
     fontWeight: 'bold',
     fontSize: 24,

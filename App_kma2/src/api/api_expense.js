@@ -96,9 +96,29 @@ const listbyuser = async(id)=>{
         console.log(error.message);
       }
   }
+  const byCategory = async(id)=>{
+    const config = {
+      headers: {
+        Authorization: `jwt ${id}`
+      },
+    };
+    try {
+      const res = await client.get('/laihieu/expense/expenseByCategory'
+      ,
+      config
+      );
+      if (res.data.success){
+        console.log("ok ban")
+      }      
+      return await res.data
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
 export {
     addExpense,
     listbyuser,
     deleteExpense,
     updateExpense,
+    byCategory,
 }

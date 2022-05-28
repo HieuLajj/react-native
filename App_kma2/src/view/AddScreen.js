@@ -51,10 +51,16 @@ const AddScreen= ({navigation}) => {
           borderTopRightRadius:40,
         }}>
           <View style={{flexDirection:'row',justifyContent:'space-between',padding:20}}>
-            <TouchableOpacity onPress={()=>navigation.navigate('Home')}>
+            <TouchableOpacity onPress={()=>{
+              navigation.navigate('Home')
+              setInputs("")
+            }}>
               <FontAwesome name='times' size={40} color={COLORS.brown4}></FontAwesome>
             </TouchableOpacity>
-            <TouchableOpacity onPress={()=>{addExpense(info.token,inputs);}}>
+            <TouchableOpacity onPress={()=>{
+              addExpense(info.token,inputs)
+              setInputs("")
+            }}>
               <FontAwesome name='thumbs-up' size={40} color={COLORS.brown4}></FontAwesome>
             </TouchableOpacity>         
           </View>
@@ -76,6 +82,7 @@ const AddScreen= ({navigation}) => {
             <TextInput 
               keyboardType='numeric'
               placeholder='amount spent'
+              value = {inputs.amount}
               style={{
                 fontSize:30,
                 marginLeft: 10,
@@ -166,16 +173,14 @@ const AddScreen= ({navigation}) => {
                 padding:10,
                 borderColor: COLORS.brown2,
                 borderWidth:1, 
-                marginLeft:10, 
-               
+                marginLeft:10,                
               }}
               multiline= {true}
               borderBottomWidth={3}
               borderLeftWidth={3}
               editable={true}
               numberOfLines={4}
-          
-          
+              value = {inputs.description}
               onChangeText = {(text) => handleOnChange(text,'description')}
             ></TextInput>
           

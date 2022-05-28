@@ -57,7 +57,7 @@ export function DrawerContent(props){
                           />)
                       }
                       label="Settings"
-                      onPress={()=>{props.navigation.navigate('Setting')}}
+                      onPress={()=>{props.navigation.navigate('SettingTab')}}
                     />       
                    </Drawer.Section>
                    <Drawer.Section title='Preferences'>

@@ -1,5 +1,6 @@
 const { response } = require("express");
 const Expense = require("../models/expense");
+const mongoose = require("mongoose");
 const expenseController = {
      
     //create expense 
@@ -68,6 +69,32 @@ const expenseController = {
           res.json({success: true, exp});
         } catch (error) {
           res.json(error);
+        }
+    },
+    //phanloai
+    expenseByCategory : async (req,res)=>{
+    //  console.log(req.user._id);
+        const today = new Date()
+        today.setUTCHours(0,0,0,0)
+  
+        const tomorrow = new Date()
+        tomorrow.setUTCHours(0,0,0,0)
+        tomorrow.setDate(tomorrow.getDate()+1)
+        try {
+           
+          const exp = await Expense.aggregate([
+            {$match: { 
+               created: { $gte : today, $lt: tomorrow }
+              ,user: mongoose.Types.ObjectId(req.user._id) 
+            }},
+            {$group:{
+              _id:"$title",
+              total: {$sum: "$amount"}
+            }} 
+          ]);
+          res.json({success: true, exp});
+        } catch (error) {
+          res.json(error)
         }
     },
 }

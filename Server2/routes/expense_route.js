@@ -10,4 +10,5 @@ router.get('/fetch_all',isAuth,expenseCtrl.fetch_all);
 router.get('/listbyuser',isAuth,expenseCtrl.fetch_single);
 router.put('/update/:id',isAuth,expenseCtrl.update);
 router.delete('/delete/:id',isAuth,expenseCtrl.delete);
+router.get('/expenseByCategory',isAuth,expenseCtrl.expenseByCategory);
 module.exports = router;

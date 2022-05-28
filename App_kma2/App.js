@@ -77,6 +77,21 @@ function MyTabs() {
   );
 }
 
+function SettingTabs(){
+  return(
+    <Stack.Navigator 
+      initialRouteName="Setting"
+      screenOptions={{
+        headerShown: false
+      }}
+      backBehavior="history"
+      >
+        <Drawer.Screen name="Setting" component={SettingScreen}/>
+        <Drawer.Screen name="SettingAccount" component={SettingScreen_Account}/>
+    </Stack.Navigator>
+  );
+}
+
 function MyDraws(props){
   // const {token} = props.route.params;
   // console.log("yone")
@@ -88,11 +103,13 @@ function MyDraws(props){
         screenOptions={{
          headerShown: false
        }}
+       backBehavior="history"
        drawerContent={ props => <DrawerContent {...props}/>}
        > 
       <Drawer.Screen name="MyTab" component={MyTabs}/>
-      <Drawer.Screen name="Setting" component={SettingScreen}/>
-      <Drawer.Screen name="SettingAccount" component={SettingScreen_Account}/>
+      <Drawer.Screen name="SettingTab" component={SettingTabs}/>
+      {/* <Drawer.Screen name="Setting" component={SettingScreen}/>
+      <Drawer.Screen name="SettingAccount" component={SettingScreen_Account}/> */}
     </Drawer.Navigator>
     </Provider>
   )

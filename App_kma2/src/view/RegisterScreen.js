@@ -1,16 +1,14 @@
-import React, {Component,useRef,useEffect,useState} from 'react';
+import React, {useState} from 'react';
 import {
   StyleSheet,
   Text,
   View,
-  Dimensions,
   Keyboard, 
 } from 'react-native';
-import { Colors } from 'react-native/Libraries/NewAppScreen';
 import Input from '../components/Input'
 import Button2 from '../components/Button2'
 import COLORS from '../components/colors';
-import client from '../api/client';
+import {registerUser} from "../api/api_user"
 
 export default RegisterScreen =( {navigation} )=>{
   const [inputs, setInputs] = useState({
@@ -20,12 +18,11 @@ export default RegisterScreen =( {navigation} )=>{
     password: '',
   });
   //const {email,name,phone,password} = inputs;
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({}); 
   const validate = () => {
     Keyboard.dismiss();
     let isValid = true;
     if (!inputs.email) {
-
       handleError('Please input email', 'email');
       isValid = false;
     }else{
@@ -65,13 +62,10 @@ export default RegisterScreen =( {navigation} )=>{
   };
 
   const register = async (inputs) => {
-    console.log("hahaha");
-    console.log(inputs);
-    const res = await client.post('/laihieu/user/add_user',{
-      ...inputs
+    registerUser(inputs).then((data)=>{
+      console.log(data)
     })
-    console.log(res.data);
-    alert("laivanhieu=>register");
+    setInputs("")
   }
   const handleOnChange = (text,input) => {
     setInputs(prevState=>({...prevState,[input]:text}));
@@ -95,6 +89,7 @@ export default RegisterScreen =( {navigation} )=>{
             iconName="email-outline" 
             placeholder="Enter your email address"
             error={errors.email}
+            text = {inputs.email}
             onFocus={()=>{
               handleError(null,'email');
             }}
@@ -104,6 +99,7 @@ export default RegisterScreen =( {navigation} )=>{
             iconName="account-outline" 
             placeholder="Enter your fullname"
             error={errors.name}
+            text = {inputs.name}
             onFocus={()=>{
               handleError(null,'name');
             }}
@@ -114,6 +110,7 @@ export default RegisterScreen =( {navigation} )=>{
             iconName="phone-outline" 
             placeholder="Enter your phone number"
             error={errors.phone}
+            text = {inputs.phone}
             onFocus={()=>{
               handleError(null,'phone');
             }}
@@ -123,6 +120,7 @@ export default RegisterScreen =( {navigation} )=>{
             iconName="lock-outline" 
             placeholder="Enter your password"
             error={errors.password}
+            text = {inputs.password}
             onFocus={()=>{
               handleError(null,'password');
             }}
@@ -147,7 +145,6 @@ export default RegisterScreen =( {navigation} )=>{
 }
 const styles = StyleSheet.create({
   container: {
-   // alignItems: 'center',
     justifyContent:'center',
     width:'100%',
     height:'100%',

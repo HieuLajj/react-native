@@ -14,6 +14,7 @@ const Input = ({
     iconName,
     error,
     password,
+    text,
     onFocus=()=>{},
     ...props
 }) =>{
@@ -35,6 +36,7 @@ const Input = ({
                 <TextInput style={styles.textinput_body} secureTextEntry={hidePassword}
                            autoCorrect= {false} onFocus={()=>{onFocus(); setIsFocused(true);}}
                            onBlur={()=>{setIsFocused(false);}} {...props}
+                           value={text}
                 />
                 {password && 
                 < TouchableOpacity

@@ -28,9 +28,10 @@ import SelectDropdown from 'react-native-select-dropdown';
 
 
 const TodoScreen= () => {
-const [viewMode, setViewMode] = React.useState("chart")
+const [reset,setReset] = useState(false)
+const [viewMode, setViewMode] = useState("chart")
 const[lists,setLists] = useState([]);
-const [selectedCategory, setSelectedCategory] = React.useState(null)
+const [selectedCategory, setSelectedCategory] = useState(null)
 const info = useSelector((state)=>state.personalInfo)
 const [refreshControl,setRefreshControl] = useState(false)
 const sheetRef = React.useRef(null);
@@ -44,7 +45,7 @@ useEffect(() => {
     image: images2[item.title],
   })))
   })
-}, [])
+}, [reset])
 
 const [inputs, setInputs] = useState({
   title: 'Other',
@@ -140,6 +141,7 @@ const handleOnChange = (text,input) => {
                 borderBottomWidth:2,
                 borderBottomColor:COLORS.blue,
               }}
+              value = {inputs.amount}
               multiline={true}
               numberOfLines={1}
               onChangeText = {(text) => handleOnChange(text,'amount')}
@@ -194,22 +196,25 @@ const handleOnChange = (text,input) => {
               multiline= {true}
               borderBottomWidth={3}
               borderLeftWidth={3}
+              value = {inputs.description}
               editable={true}
               numberOfLines={2}
-          
-          
               onChangeText = {(text) => handleOnChange(text,'description')}
               ></TextInput>
             </View>
             <View style={{flexDirection:'row',justifyContent:'space-between',marginTop:10}}>
               <TouchableOpacity onPress={()=>{
-                console.log(id_update)
-                console.log(inputs)
                 updateExpense(info.token,id_update,inputs)
+                setReset(!reset)
+                sheetRef.current.snapTo(1)
+                setInputs("")
                 }}>
                 <Text style={{fontSize:20}}>Ok</Text>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => sheetRef.current.snapTo(1)}>
+              <TouchableOpacity onPress={() => {
+                  sheetRef.current.snapTo(1)
+                  setInputs("")
+                  }}>
                <Text style={{fontSize:20}}>Cancel</Text>
               </TouchableOpacity>
             </View>
@@ -225,7 +230,7 @@ const handleOnChange = (text,input) => {
      </View>
     );
     return(
-      <View>
+      <View style={{flex:1}}>
         <BottomSheet
         snapPoints={[195,0]}
         ref={sheetRef}
@@ -249,13 +254,7 @@ const handleOnChange = (text,input) => {
             refreshControl = {
               <RefreshControl refreshing = {refreshControl} onRefresh={()=>{
                 setRefreshControl(true)
-                listbyuser(info.token).then((data)=>{
-                  setLists(data.exp.map((item,index)=>({
-                    ...item,
-                    color: colors[index%colors.length],
-                    image: images2[item.title],
-                  })))
-                  })
+                setReset(!reset)
                 setRefreshControl(false)
               }} colors={['red']}
               />
@@ -376,7 +375,6 @@ function setSelectCategoryByName(name) {
              console.log(`e`,e);
            }}
          />
-         <Text>faeeeffw</Text>
       </View>
      
     )
@@ -394,17 +392,12 @@ function setSelectCategoryByName(name) {
         {
           viewMode == "chart" &&
           <ScrollView nestedScrollEnabled={true} style={{ flex:1}} >
-          {/* {/* <View  style={{flex:1}}>
-          //  */}
             <View style={{flex:1}}>
-            {renderChart()}
+              {renderChart()}
             </View> 
-            {/* <View style={{flex:1}}>    */}
             <ScrollView horizontal={true} style={{flex:1}}>
-            {renderExpenseSumary()}
-            </ScrollView>
-            {/* </View> */}
-          
+              {renderExpenseSumary()}
+            </ScrollView>   
            </ScrollView> 
         } 
        
@@ -421,15 +414,8 @@ function setSelectCategoryByName(name) {
 
 const styles2 = StyleSheet.create({
   panel: {
-    //padding: 20,
     backgroundColor: COLORS.white,
     paddingHorizontal:20,
-    // borderTopLeftRadius: 20,
-    // borderTopRightRadius: 20,
-    // shadowColor: '#000000',
-    // shadowOffset: {width: 0, height: 0},
-    // shadowRadius: 5,
-    // shadowOpacity: 0.4,
   },
   header: {
     backgroundColor: COLORS.blue,

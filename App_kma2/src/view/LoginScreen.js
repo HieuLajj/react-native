@@ -3,8 +3,9 @@ import styless from '../components/styless';
 import Input from '../components/Input'
 import Button2 from '../components/Button2'
 import client from '../api/client';
-import {updateEmail, updatePhone,updateName,updateToken,updateAvatar} from '../redux/actions/updateAction'
+import {updateInfomation,updateEmail, updatePhone,updateName,updateToken,updateAvatar} from '../redux/actions/updateAction'
 import {useDispatch,useSelector} from 'react-redux';
+import {loginUser} from "../api/api_user"
 import {
     Image,
     StyleSheet,
@@ -183,28 +184,17 @@ const GreenComponet = ({navigation}) => {
     };
     
     const login = async(inputs) => {
-        try {
-           console.log(inputs);
-           const res = await client.post('/laihieu/user/sign_in',{
-             ...inputs
-           }) 
-           console.log("bbbb");
-          
-           console.log(res.data);
-           dispatch(updateEmail(res.data.user.email))
-           dispatch(updatePhone(res.data.user.phone))
-           dispatch(updateName(res.data.user.name))
-           res.data.user.avatar ?  dispatch(updateAvatar(res.data.user.avatar)) : dispatch(updateAvatar('https://sieupet.com/sites/default/files/pictures/images/1-1473150685951-5.jpg'))
-           dispatch(updateToken(res.data.token))
-           
-
-           if(res.data.success){
-                navigation.navigate('MyDraw',{token:res.data.token});
-          }          
-        } catch (error) {
-            console.log(error.message);
-            
-        }
+        console.log(inputs)
+        loginUser(inputs).then((data)=>{
+               data.user.avatar?
+               dispatch(updateInfomation(data.user.email,data.user.name,data.user.phone,data.token,data.user.avatar))
+               :
+               dispatch(updateInfomation(data.user.email,data.user.name,data.user.phone,data.token,'https://sieupet.com/sites/default/files/pictures/images/1-1473150685951-5.jpg'))
+               if(data.success){
+                    navigation.navigate('MyDraw',{token:data.token});
+                }          
+        })
+        setInputs("")
     }
 
     return(
@@ -214,6 +204,7 @@ const GreenComponet = ({navigation}) => {
                 iconName="email-outline" 
                 placeholder="Email"
                 error={errors.email}
+                text = {inputs.email}
                 onFocus={()=>{
                 handleError(null,'email');
                 }}
@@ -224,6 +215,7 @@ const GreenComponet = ({navigation}) => {
                 iconName="lock-outline" 
                 placeholder="Password"
                 error={errors.password}
+                text = {inputs.password}
                 onFocus={()=>{
                 handleError(null,'password');
                 }}
