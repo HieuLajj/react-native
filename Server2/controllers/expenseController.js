@@ -80,18 +80,64 @@ const expenseController = {
         const tomorrow = new Date()
         tomorrow.setUTCHours(0,0,0,0)
         tomorrow.setDate(tomorrow.getDate()+1)
+
+        const date = new Date(), y = date.getFullYear(), m = date.getMonth()
+        const firstDayMonth = new Date(y, m, 1)
+        const lastDayMonth = new Date(y, m + 1, 0)
         try {
            
-          const exp = await Expense.aggregate([
-            {$match: { 
-               created: { $gte : today, $lt: tomorrow }
-              ,user: mongoose.Types.ObjectId(req.user._id) 
-            }},
-            {$group:{
-              _id:"$title",
-              total: {$sum: "$amount"}
-            }} 
-          ]);
+          let exp2 = await Expense.aggregate([{
+            $facet:{
+              today: [
+              {$match: { 
+                 created: { $gte : today, $lt: tomorrow }
+                ,user: mongoose.Types.ObjectId(req.user._id) 
+              }},
+              {$group:{
+                _id:"$title",
+                total: {$sum: "$amount"}
+              }},
+              {$sort:{
+               _id:1
+              }} 
+              ],
+              totalday:[
+                {$match:{
+                  created: { $gte : today, $lt: tomorrow }
+                  ,user: mongoose.Types.ObjectId(req.user._id) 
+                }},
+                {$group:{
+                  _id: today,
+                  total: {$sum: "$amount"}
+                }} 
+              ],
+              month: [
+                {$match: { 
+                   created: { $gte : firstDayMonth, $lt: lastDayMonth }
+                  ,user: mongoose.Types.ObjectId(req.user._id) 
+                }},
+                {$group:{
+                  _id:"$title",
+                  total: {$sum: "$amount"}
+                }},
+                {$sort:{
+                  _id:1
+                }} 
+              ],
+              totalmonth:[
+                {$match:{
+                   created: { $gte : firstDayMonth, $lt: lastDayMonth }
+                  ,user: mongoose.Types.ObjectId(req.user._id) 
+                }},
+                {$group:{
+                  _id: firstDayMonth,
+                  total: {$sum: "$amount"}
+                }} 
+              ],
+
+            }         
+          }]);
+          let exp = {month: exp2[0].month,today: exp2[0].today,totalday: exp2[0].totalday[0], totalmonth: exp2[0].totalmonth[0]}
           res.json({success: true, exp});
         } catch (error) {
           res.json(error)

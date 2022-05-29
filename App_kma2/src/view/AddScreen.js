@@ -1,5 +1,5 @@
 
-import React,{useState} from 'react';
+import React,{useState,useRef} from 'react';
 import COLORS from '../components/colors';
 import {useDispatch,useSelector} from 'react-redux';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -24,6 +24,7 @@ import {
 
 const AddScreen= ({navigation}) => {
   const info = useSelector((state)=>state.personalInfo)
+  const  dropdownRef =useRef({});
   const [inputs, setInputs] = useState({
     title: 'Other',
     description: '',
@@ -60,6 +61,7 @@ const AddScreen= ({navigation}) => {
             <TouchableOpacity onPress={()=>{
               addExpense(info.token,inputs)
               setInputs("")
+              dropdownRef.current.reset()
             }}>
               <FontAwesome name='thumbs-up' size={40} color={COLORS.brown4}></FontAwesome>
             </TouchableOpacity>         
@@ -118,6 +120,7 @@ const AddScreen= ({navigation}) => {
               <SelectDropdown
               
                 data={countriesWithFlags}
+                ref = {dropdownRef}
                 onSelect={(selectedItem, index) => {
                   //console.log(selectedItem, index);
                   console.log(selectedItem.title);

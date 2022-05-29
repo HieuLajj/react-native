@@ -18,28 +18,58 @@ import {colors,images2,countriesWithFlags} from '../components/salon2';
 const TODAY = 'TODAY';
 const MONTH = 'MONTH';
 export default HomeScreen =( {navigation,route} )=>{
+  const [reset,setReset] = useState(false)
   const[lists,setLists] = useState([]);
+  const[listsDay,setListsDay] = useState([]);
+  const[listsMonth,setListsMonth] = useState([]);
   const [day, setday] = useState(TODAY);
   const [money,setMoney] = useState();
+  const [moneyDay, setMoneyDay] = useState(0);
+  const [moneyMonth, setMoneyMonth] = useState(0);
   const [refreshControl,setRefreshControl] = useState(false)
   const info = useSelector((state)=>state.personalInfo)
   useEffect(() => {
-    console.log(info.token);
-    let a=0;
     byCategory(info.token).then((data)=>{
-      setLists(data.exp.map((item,index)=>({
+      setLists(data.exp.today.map((item,index)=>({
         ...item,
         color: colors[index%colors.length],
         image: images2[item._id],
         key:index,
       })))
-      for (var key2 in lists){
-        //console.log(lists[key2].total);
-        a+=lists[key2].total
+      setMoney(data.exp.totalday.total)})},[])
+  useEffect(() => {
+    byCategory(info.token).then((data)=>{
+      setLists(data.exp.today.map((item,index)=>({
+        ...item,
+        color: colors[index%colors.length],
+        image: images2[item._id],
+        key:index,
+      })))
+      setMoney(data.exp.totalday.total)
+      setListsDay(data.exp.today.map((item,index)=>({
+        ...item,
+        color: colors[index%colors.length],
+        image: images2[item._id],
+        key:index,
+      })))
+      setListsMonth(data.exp.month.map((item,index)=>({
+        ...item,
+        color: colors[index%colors.length],
+        image: images2[item._id],
+        key:index,
+      })))
+      setMoneyDay(data.exp.totalday.total)
+      setMoneyMonth(data.exp.totalmonth.total)
+      if(day==TODAY && listsDay!=""){
+        setLists(listsDay)
+        setMoney(moneyDay)
       }
-      setMoney(a)
+      if(day==MONTH && listsDay!=""){
+        setLists(listsMonth)
+        setMoney(moneyMonth)
+      }
     })
-  },[])
+  },[reset])
 
   return (
     <View style={styles.container}>
@@ -54,7 +84,7 @@ export default HomeScreen =( {navigation,route} )=>{
         <View style={styles.body_title}>
           <View style={{ flexDirection: 'row'}}>
             <TouchableOpacity
-              onPress = {()=>{setday(TODAY)}}
+              onPress = {()=>{setday(TODAY), setReset(!reset)}}
               style={{alignContent:'center',justifyContent:'center'}}
               disabled = {day === TODAY ? true : false}
             >
@@ -73,7 +103,7 @@ export default HomeScreen =( {navigation,route} )=>{
                 salignContent:'center',
                 justifyContent:'center'
               }}
-              onPress = {()=>{setday(MONTH)}}
+              onPress = {()=>{setday(MONTH), setReset(!reset)}}
               disabled = {day === MONTH ? true : false}
             >
               <Text
@@ -119,20 +149,7 @@ export default HomeScreen =( {navigation,route} )=>{
             refreshControl = {
               <RefreshControl refreshing = {refreshControl} onRefresh={()=>{
                 setRefreshControl(true)
-                let a=0;
-                byCategory(info.token).then((data)=>{
-                  setLists(data.exp.map((item,index)=>({
-                    ...item,
-                    color: colors[index%colors.length],
-                    image: images2[item._id],
-                    key:index,
-                  })))
-                  for (var key2 in lists){
-                   //console.log(lists[key2].total);
-                   a+=lists[key2].total
-                  }
-                   setMoney(a)
-                  })
+                setReset(!reset)
                 setRefreshControl(false)
               }} colors={['red']}
               />

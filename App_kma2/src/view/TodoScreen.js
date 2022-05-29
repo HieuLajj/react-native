@@ -1,4 +1,4 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState,useEffect,useRef} from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import COLORS from '../components/colors';
 import {Calendar} from 'react-native-calendars'
@@ -35,6 +35,7 @@ const [selectedCategory, setSelectedCategory] = useState(null)
 const info = useSelector((state)=>state.personalInfo)
 const [refreshControl,setRefreshControl] = useState(false)
 const sheetRef = React.useRef(null);
+const dropdownRef = useRef({});
 const fall = new Animated.Value(1);
 
 useEffect(() => {
@@ -149,6 +150,7 @@ const handleOnChange = (text,input) => {
             <Text>       
               <SelectDropdown         
                 data={countriesWithFlags}
+                ref={dropdownRef} 
                 onSelect={(selectedItem, index) => {
                   //console.log(selectedItem, index);
                   console.log(selectedItem.title);
@@ -207,6 +209,7 @@ const handleOnChange = (text,input) => {
                 updateExpense(info.token,id_update,inputs)
                 setReset(!reset)
                 sheetRef.current.snapTo(1)
+                dropdownRef.current.reset() 
                 setInputs("")
                 }}>
                 <Text style={{fontSize:20}}>Ok</Text>
@@ -214,6 +217,7 @@ const handleOnChange = (text,input) => {
               <TouchableOpacity onPress={() => {
                   sheetRef.current.snapTo(1)
                   setInputs("")
+                  dropdownRef.current.reset() 
                   }}>
                <Text style={{fontSize:20}}>Cancel</Text>
               </TouchableOpacity>
