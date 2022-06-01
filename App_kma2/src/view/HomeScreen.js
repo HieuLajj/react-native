@@ -134,7 +134,7 @@ export default HomeScreen =( {navigation,route} )=>{
             keyExtractor = {item => item.key}
             contentContainerStyle={{padding:5,paddingBottom:20,}}
             renderItem={({item})=>{
-              return <TouchableOpacity onPress={()=>{navigation.navigate('SalonList',{item});}} style={{flex:1,marginBottom:5}}>
+              return <TouchableOpacity onPress={()=>{navigation.navigate('SalonList',{dataitem: {item},data: day});}} style={{flex:1,marginBottom:5}}>
                   <View style={{padding:10,flexDirection:'row',justifyContent:'space-between',alignItems:'center'}}>
                     <View style={[StyleSheet.absoluteFillObject,{backgroundColor:item.color,
                                   borderRadius:10,}]}/>
@@ -158,8 +158,7 @@ export default HomeScreen =( {navigation,route} )=>{
         </View>
       </View>
     </View>
-    );
-    
+    );  
 }
 const styles = StyleSheet.create({
   container : {

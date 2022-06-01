@@ -115,10 +115,72 @@ const listbyuser = async(id)=>{
       console.log(error.message);
     }
   }
+  const byDay = async(id,params)=>{
+    const config = {
+      headers: {
+        Authorization: `jwt ${id}`
+      },
+    };
+    try {
+      const res = await client.get(`/laihieu/expense/expenseByDay/${params}`
+      ,
+      config
+      );
+      if (res.data.success){
+        console.log("ok ban")
+      }      
+      return await res.data
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+  const byMonth = async(id,params)=>{
+    const config = {
+      headers: {
+        Authorization: `jwt ${id}`
+      },
+    };
+    try {
+      const res = await client.get(`/laihieu/expense/expenseByMonth/${params}`
+      ,
+      config
+      );
+      if (res.data.success){
+        console.log("ok ban")
+      }      
+      return await res.data
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+  
+  const DayMonth = async(id)=>{
+    const config = {
+      headers: {
+        Authorization: `jwt ${id}`
+      },
+    };
+    try {
+      const res = await client.get(`/laihieu/expense/expenseDayMonth`
+      ,
+      config
+      );
+      if (res.data.success){
+        console.log("ok ban")
+      }      
+      return await res.data
+    } catch (error) {
+      console.log(error.message);
+    }
+  }
+
 export {
     addExpense,
     listbyuser,
     deleteExpense,
     updateExpense,
     byCategory,
+    byDay,
+    byMonth,
+    DayMonth,
 }

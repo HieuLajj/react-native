@@ -6,6 +6,7 @@ import salon from '../components/salon'
 import ItemBox from '../components/ItemBox';
 import {useDispatch,useSelector} from 'react-redux';
 import BottomSheet from 'reanimated-bottom-sheet';
+import {byCategory} from '../api/api_expense'
 import {
   ScrollView,
   StyleSheet,
@@ -18,7 +19,7 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
-import {listbyuser,deleteExpense,updateExpense} from '../api/api_expense'
+import {listbyuser,deleteExpense,updateExpense,DayMonth} from '../api/api_expense'
 import {VictoryPie, VictoryTheme} from 'victory-native';
 import styless from '../components/styless';
 import {colors,images2,countriesWithFlags} from '../components/salon2';
@@ -30,7 +31,9 @@ import SelectDropdown from 'react-native-select-dropdown';
 const TodoScreen= () => {
 const [reset,setReset] = useState(false)
 const [viewMode, setViewMode] = useState("chart")
-const[lists,setLists] = useState([]);
+const [lists,setLists] = useState([]);
+const [lists2,setLists2] = useState([]);
+const [listDayMonth, setListDayMonth] = useState([]);
 const [selectedCategory, setSelectedCategory] = useState(null)
 const info = useSelector((state)=>state.personalInfo)
 const [refreshControl,setRefreshControl] = useState(false)
@@ -46,6 +49,16 @@ useEffect(() => {
     image: images2[item.title],
   })))
   })
+
+ 
+    byCategory(info.token).then((data)=>{
+    setLists2(data.exp.month.map((item,index)=>({
+        ...item,
+        color: colors[index%colors.length],
+        image: images2[item._id],
+        key:index,
+    })))})
+
 }, [reset])
 
 const [inputs, setInputs] = useState({
@@ -104,7 +117,24 @@ const handleOnChange = (text,input) => {
               backgroundColor:viewMode== "calendar" ? COLORS.blue : null,
               borderRadius:25,
             }}
-            onPress={()=>setViewMode("calendar")}
+            onPress={()=>{
+            setViewMode("calendar")
+            DayMonth(info.token).then((data)=>{
+              var data4 = {}
+              data.exp.forEach(
+                function(v){
+                  data4[v._id] = v.total>20000? {selected: true, marked: true, selectedColor: 'blue'}:{selected: true, marked: true, selectedColor: 'red'}
+                }
+              );
+              console.log(data4)
+              setListDayMonth(data4);
+              // setLists(data.exp.map((item,index)=>({
+              //   ...item,
+              //   color: colors[index%colors.length],
+              //   image: images2[item.title],
+              // })))
+            })
+          }}
           >
             <FontAwesome name="calendar" color={COLORS.black} size={30}/>
           </TouchableOpacity>
@@ -268,22 +298,23 @@ const handleOnChange = (text,input) => {
     )
   }
 
-function setSelectCategoryByName(name) {
-    let category = salon.filter(a => a.name == name)
+function setSelectCategoryByName(_id) {
+    let category = lists2.filter(a => a._id == _id)
     setSelectedCategory(category[0])
 }
   function renderChart(){
    
     return (
       <View style={{alignItems:'center', justifyContent:'center'}}>
-        <VictoryPie data={salon.slice(0,5)} 
+        <VictoryPie data={lists2.slice(0,5)} 
                     labelRadius={({ innerRadius }) => (styless.widowWidth * 0.4 + innerRadius) / 2.5}
-                    x="name" 
+                    x="_id" 
                     y="total" 
-                    radius={({ datum }) => (selectedCategory && selectedCategory.name == datum.name) ? styless.widowWidth * 0.4 : styless.widowWidth * 0.4 - 10}
-                    theme={VictoryTheme.material}
+                    radius={({ datum }) => (selectedCategory && selectedCategory._id == datum._id) ? styless.widowWidth * 0.4 : styless.widowWidth * 0.4 - 10}
+                    //theme={VictoryTheme.material}
+                    colorScale={["tomato", "orange", "gold", "cyan", "navy" ]}
                     innerRadius={70}
-                    style={{labels:{fontSize:15,fontWeight:'bold',fill: COLORS.white,}}}
+                    style={{labels:{fontSize:15,fontWeight:'bold',fill: COLORS.black,}}}
                     events={[{
                       target: "data",
                       eventHandlers:{
@@ -291,7 +322,7 @@ function setSelectCategoryByName(name) {
                           return [{
                             target:'labels',
                             mutation: (props)=>{
-                              let categoryName =salon[props.index].name;
+                              let categoryName =lists2[props.index]._id;
                               setSelectCategoryByName(categoryName)
                             }
                           }]
@@ -300,7 +331,7 @@ function setSelectCategoryByName(name) {
                     }]}
                     />
         <View style={{position:'absolute',top:'46%',left:'42%'}}>
-          <Text style={{fontSize:16, fontWeight:"bold"}}>5 Expenses</Text>
+          <Text style={{fontSize:16, fontWeight:"bold"}}>{lists2.length} Expenses</Text>
         </View>
       </View>
     )
@@ -320,11 +351,11 @@ function setSelectCategoryByName(name) {
             width:styless.widowWidth-40,
             paddingHorizontal: 10,
             borderRadius:10,
-            backgroundColor:(selectedCategory && selectedCategory.name==item.name)?item.color: COLORS.white,
+            backgroundColor:(selectedCategory && selectedCategory._id==item._id)?item.color: COLORS.white,
           }}
 
           onPress={()=>{
-            let catagoryName = item.name
+            let catagoryName = item._id
             setSelectCategoryByName(catagoryName)
           }}
         >
@@ -340,7 +371,7 @@ function setSelectCategoryByName(name) {
             <Text style={{
               marginLeft:10,
               fontWeight:'bold',
-            }}>{item.name}</Text>
+            }}>{item._id}</Text>
           </View>
           <View style={{justifyContent:'center'}}>
              <Text style={{fontWeight:'bold'}}>{item.total}</Text>
@@ -351,7 +382,7 @@ function setSelectCategoryByName(name) {
     return(
       <View>
         <FlatList
-          data={salon}
+          data={lists2}
           renderItem={renderItem}
           keyExtractor = {item => item.key}
           // ListHeaderComponent={ContentThatGoesAboveTheFlatList}
@@ -366,15 +397,18 @@ function setSelectCategoryByName(name) {
     return(
       <View>
          <Calendar
-             markedDates={{
-              '2022-05-16': {selected: true, marked: true, selectedColor: 'blue'},
-              '2022-05-17': {selected: true, marked: true, selectedColor: 'red'},
-              '2022-05-18':  {selected: true, marked: true, selectedColor: 'red'},
-              '2022-05-19': {selected: true, marked: true, selectedColor: 'red'},
-              '2022-05-20': {selected: true, marked: true, selectedColor: 'blue'},
-              '2022-05-21': {selected: true, marked: true, selectedColor: 'blue'},
-              '2022-05-22': {selected: true, marked: true, selectedColor: 'blue'},
-            }}
+             markedDates={
+            //    {
+            //   '2022-05-16': {selected: true, marked: true, selectedColor: 'blue'},
+            //   '2022-05-17': {selected: true, marked: true, selectedColor: 'red'},
+            //   '2022-05-18': {selected: true, marked: true, selectedColor: 'red'},
+            //   '2022-05-19': {selected: true, marked: true, selectedColor: 'red'},
+            //   '2022-05-20': {selected: true, marked: true, selectedColor: 'blue'},
+            //   '2022-05-21': {selected: true, marked: true, selectedColor: 'blue'},
+            //   '2022-05-22': {selected: true, marked: true, selectedColor: 'blue'},
+            // }
+            listDayMonth
+          }
             onDayPress={(e)=>{
              console.log(`e`,e);
            }}

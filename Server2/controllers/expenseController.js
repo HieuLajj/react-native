@@ -143,6 +143,75 @@ const expenseController = {
           res.json(error)
         }
     },
+
+    expenseByDay : async (req,res)=>{
+          const {id} = req?.params;
+          const today = new Date()
+          today.setUTCHours(0,0,0,0)
+    
+          const tomorrow = new Date()
+          tomorrow.setUTCHours(0,0,0,0)
+          tomorrow.setDate(tomorrow.getDate()+1)
+          try {
+             
+            let exp = await Expense.aggregate([              
+                {$match: { 
+                  created: { $gte : today, $lt: tomorrow },
+                  user: mongoose.Types.ObjectId(req.user._id)
+                  ,title:  id
+                }},               
+              ])            
+            res.json({success: true, exp});
+          } catch (error) {
+            res.json(error)
+          }
+      },
+    expenseByMonth : async (req,res)=>{
+        const {id} = req?.params;
+        const date = new Date(), y = date.getFullYear(), m = date.getMonth()
+        const firstDayMonth = new Date(y, m, 1)
+        const lastDayMonth = new Date(y, m + 1, 0)
+        try {
+           
+          let exp = await Expense.aggregate([              
+              {$match: { 
+                created: { $gte : firstDayMonth, $lt: lastDayMonth },
+                user: mongoose.Types.ObjectId(req.user._id)
+                ,title:  id
+              }},               
+            ])            
+          res.json({success: true, exp});
+        } catch (error) {
+          res.json(error)
+        }
+    },
+    expenseDayVsMonth : async (req,res)=>{
+      try {
+           
+        let exp = await Expense.aggregate([              
+          {
+            $match: { 
+              user: mongoose.Types.ObjectId(req.user._id)
+              }
+          },
+          {$project: {
+             // dayMonthYear: { $dateToString: { format: "%d/%m/%Y", date: "$created" } },
+              dayMonthYear: { $dateToString: { format: "%Y-%m-%d", date: "$created" } },
+              //  '2022-05-16': {selected: true, marked: true, selectedColor: 'blue'},
+              amount:true,
+              user:true,
+          }},
+          {$group:{
+            _id: "$dayMonthYear",
+            total: {$sum: "$amount"}
+          }}
+          
+        ])            
+        res.json({success: true, exp});
+      } catch (error) {
+        res.json(error)
+      }
+    }
 }
 
 module.exports = expenseController;
