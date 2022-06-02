@@ -51,6 +51,7 @@ const userController = {
           name: user.name,
           email: user.email,
           phone: user.phone,
+          avg: user.avg,
          // password: user.password,
           avatar: user.avatar ? user.avatar : '',
         }

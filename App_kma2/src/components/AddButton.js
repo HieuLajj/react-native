@@ -13,18 +13,28 @@ import {
   TouchableHighlight,
   TouchableOpacity,
 } from 'react-native';
+import COLORS from './colors';
 
 
 const AddButton = ({focused}) =>{
         return(
             <View style={{position:'absolute', alignItems:'center'}}>
                   
-                    <View style={styles.button}>
+                     {/* <View style={styles.button}>
                         <FontAwesome name={focused ? 'plane': 'plus'} size={24} color={focused ? 'yellow': '#fff'}></FontAwesome>
-                      {/* //  name= {focused? 'gr': colors.black} */}
-                    </View>
+                     </View> */}
+                     <View>
+                        <FontAwesome name='plus' size={24} color={focused? COLORS.blue: COLORS.black}></FontAwesome>
+                     </View>
                    
+                    
+                  
+                  {/* <View>
+                      <FontAwesome name='plus' size={24} color= {focused? COLORS.blue: COLORS.black}></FontAwesome>
+                  </View> */}
+                 
             </View>
+            
         )
     
 }

@@ -27,6 +27,7 @@ const userSchema = new mongoose.Schema({
     },
     avg:{
         type: Number,
+        default: 500000,
     }
 });
 

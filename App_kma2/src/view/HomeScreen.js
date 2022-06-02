@@ -7,6 +7,7 @@ import {
   TextInput,
   TouchableOpacity,
   Dimensions,
+  ImageBackground,
   Image,
   state,
   FlatList,
@@ -15,6 +16,7 @@ import COLORS from '../components/colors'
 import {useSelector} from 'react-redux';
 import {byCategory} from '../api/api_expense'
 import {colors,images2,countriesWithFlags} from '../components/salon2';
+import AddButton2 from '../components/AddButton2';
 const TODAY = 'TODAY';
 const MONTH = 'MONTH';
 export default HomeScreen =( {navigation,route} )=>{
@@ -28,7 +30,9 @@ export default HomeScreen =( {navigation,route} )=>{
   const [moneyMonth, setMoneyMonth] = useState(0);
   const [refreshControl,setRefreshControl] = useState(false)
   const info = useSelector((state)=>state.personalInfo)
+  var texttien = info.avg-moneyDay;
   useEffect(() => {
+    texttien= info.avg-moneyDay
     byCategory(info.token).then((data)=>{
       setLists(data.exp.today.map((item,index)=>({
         ...item,
@@ -38,6 +42,7 @@ export default HomeScreen =( {navigation,route} )=>{
       })))
       setMoney(data.exp.totalday.total)})},[])
   useEffect(() => {
+    texttien= info.avg-moneyDay
     byCategory(info.token).then((data)=>{
       setLists(data.exp.today.map((item,index)=>({
         ...item,
@@ -70,14 +75,34 @@ export default HomeScreen =( {navigation,route} )=>{
       }
     })
   },[reset])
-
   return (
     <View style={styles.container}>
       <View style={{height:"25%"}}>
-        <View style={{flex:1, justifyContent:'center',alignItems:'center'}}>
-          <Text style={styles.text_1}>My Budget</Text>
-          <Text style={styles.text_2}>$537.432</Text>
-        </View>
+        
+        <ImageBackground
+          source={
+            require('../images/tienao.png')}
+          style={{flex:1, justifyContent:'center',alignItems:'center'}}>
+            <Text style={styles.text_1}>My Budget</Text>
+            <Text
+              style={{
+              color: texttien <(0.5*info.avg) ? "#FF7700": "#0028FF",
+              fontSize: 45,
+              fontWeight: '700'
+             }
+            }
+            >${texttien}</Text>
+        </ImageBackground>
+        {/* <TouchableOpacity 
+          style={{
+            position: 'absolute',
+            right:30,
+            bottom:30,
+          }}
+        >
+          <Text>Hieulai</Text>
+        </TouchableOpacity> */}
+    
       </View>
 
       <View style={styles.body}>
@@ -155,6 +180,15 @@ export default HomeScreen =( {navigation,route} )=>{
               />
             }
             />
+            <TouchableOpacity 
+              style={{
+              position: 'absolute',
+              right:20,
+              bottom:20,
+            }}
+            >
+            <AddButton2/>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -163,7 +197,7 @@ export default HomeScreen =( {navigation,route} )=>{
 const styles = StyleSheet.create({
   container : {
     flex:1 ,
-    backgroundColor: COLORS.brown3,
+    backgroundColor: COLORS.brown2,
   },
   text_1 :{
     color: COLORS.white,
@@ -171,7 +205,7 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   text_2 :{
-    color: COLORS.white,
+    //color: COLORS.white,
     fontSize: 45,
     fontWeight: '700'
   },

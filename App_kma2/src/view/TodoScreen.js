@@ -123,7 +123,7 @@ const handleOnChange = (text,input) => {
               var data4 = {}
               data.exp.forEach(
                 function(v){
-                  data4[v._id] = v.total>20000? {selected: true, marked: true, selectedColor: 'blue'}:{selected: true, marked: true, selectedColor: 'red'}
+                  data4[v._id] = v.total<info.avg? {selected: true, marked: true, selectedColor: 'blue'}:{selected: true, marked: true, selectedColor: 'red'}
                 }
               );
               console.log(data4)

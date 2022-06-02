@@ -10,6 +10,7 @@ const initialState = {
     name: "",
     phone: "",
     token: "",
+    avg: "",
     avatar: "",
 }
 
@@ -22,6 +23,7 @@ export default function actionForReducer(state = initialState, payload){
                 name: payload.name,
                 phone: payload.phone,
                 token: payload.token,
+                avg:   payload.avg,
                 avatar:payload.avatar,
             }
         default:

@@ -187,9 +187,9 @@ const GreenComponet = ({navigation}) => {
         console.log(inputs)
         loginUser(inputs).then((data)=>{
                data.user.avatar?
-               dispatch(updateInfomation(data.user.email,data.user.name,data.user.phone,data.token,data.user.avatar))
+               dispatch(updateInfomation(data.user.email,data.user.name,data.user.phone,data.token,data.user.avg,data.user.avatar))
                :
-               dispatch(updateInfomation(data.user.email,data.user.name,data.user.phone,data.token,'https://sieupet.com/sites/default/files/pictures/images/1-1473150685951-5.jpg'))
+               dispatch(updateInfomation(data.user.email,data.user.name,data.user.phone,data.token,data.user.avg,'https://sieupet.com/sites/default/files/pictures/images/1-1473150685951-5.jpg'))
                if(data.success){
                     navigation.navigate('MyDraw',{token:data.token});
                 }          
