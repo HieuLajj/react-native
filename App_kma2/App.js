@@ -58,20 +58,28 @@ function MyTabs() {
       screenOptions={{
         headerShown: false
       }}
+      labeled={false}
       backBehavior="history"
     >
       <Tab.Screen name="Home" component={HomeScreen} options={{
+        tabBarShowLabel: false,
         tabBarIcon:({focused}) => <HomeButton focused={focused}/>,
       }}/>
-      <Tab.Screen name="Add" component={AddScreen}   options={{
-       tabBarIcon: ({focused})=><AddButton  focused={focused}/>,  
-       tabBarLabel: "",
-       //tabBarButton:()=> <AddButton/>,
-       
-      }}/>
+
       <Tab.Screen name="Todo" component={TodoScreen} options={{
+         tabBarShowLabel: false,
          tabBarIcon:({focused}) => <TodoButton focused={focused}/>,
       }}/>
+
+      <Tab.Screen name="Add" component={AddScreen}   options={{
+        tabBarShowLabel: false,
+       tabBarIcon: ({focused})=><AddButton  focused={focused}/>,  
+       
+       //tabBarButton:()=> <AddButton/>,
+       
+      }
+      }/>
+     
 
     </Tab.Navigator>
   );

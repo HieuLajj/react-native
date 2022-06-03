@@ -1,7 +1,9 @@
 
-import React from 'react';
+import React,{useRef,useEffect,useState} from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import colors from './colors'
+import Animated from 'react-native-reanimated';
+import * as Animatable from 'react-native-animatable';
 //import Wave from 'react-native-waveview'
 import {
 
@@ -14,12 +16,41 @@ import {
 } from 'react-native';
 
 const TodoButton = ({focused}) =>{
+  const startAnimation = {
+
+    0: {
+        scale:.5,
+        rotate: '0deg',
+    },
+  
+    1: {
+        scale:1.5,
+        rotate: '360deg'
+    },
+  };
+  const endAnimation = {
+    from: {
+        scale:1.5,
+        rotate: '360deg'
+    },
+    to: {
+        scale:1,
+        rotate: '0deg',
+    },
+  };
         return(
+         
             <View style={{position:'absolute', alignItems:'center'}}>
                   
-                    <View>
+                  <Animatable.View
+                     //ref={viewRef}
+                     duration={4000}
+                     animation = {focused?startAnimation:endAnimation}
+                     >
+
                         <FontAwesome name='clipboard' size={24} color= {focused? colors.blue: colors.black}></FontAwesome>
-                    </View>
+                  </Animatable.View>
+                 
                    
             </View>
         )

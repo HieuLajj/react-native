@@ -14,21 +14,30 @@ import {
 } from 'react-native';
 import COLORS from '../components/colors'
 import {useSelector} from 'react-redux';
-import {byCategory} from '../api/api_expense'
+import {byCategory,addExpense} from '../api/api_expense'
+import BottomSheet from 'reanimated-bottom-sheet';
 import {colors,images2,countriesWithFlags} from '../components/salon2';
 import AddButton2 from '../components/AddButton2';
+import Animated from 'react-native-reanimated';
+import SelectDropdown from 'react-native-select-dropdown';
+import styless from '../components/styless';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
 const TODAY = 'TODAY';
 const MONTH = 'MONTH';
 export default HomeScreen =( {navigation,route} )=>{
   const [reset,setReset] = useState(false)
-  const[lists,setLists] = useState([]);
-  const[listsDay,setListsDay] = useState([]);
-  const[listsMonth,setListsMonth] = useState([]);
+  const [lists,setLists] = useState([]);
+  const [listsDay,setListsDay] = useState([]);
+  const [listsMonth,setListsMonth] = useState([]);
   const [day, setday] = useState(TODAY);
   const [money,setMoney] = useState();
   const [moneyDay, setMoneyDay] = useState(0);
   const [moneyMonth, setMoneyMonth] = useState(0);
   const [refreshControl,setRefreshControl] = useState(false)
+  const sheetRef = React.useRef(null);
+  const fall = new Animated.Value(1);
+  const dropdownRef = useRef({});
   const info = useSelector((state)=>state.personalInfo)
   var texttien = info.avg-moneyDay;
   useEffect(() => {
@@ -75,6 +84,125 @@ export default HomeScreen =( {navigation,route} )=>{
       }
     })
   },[reset])
+  const [inputs, setInputs] = useState({
+    title: 'Other',
+    description: '',
+    amount:''
+  });
+  const handleOnChange = (text,input) => {
+    setInputs(prevState=>({...prevState,[input]:text}));
+  };
+  
+
+
+  const renderInner = () =>(
+    <View style={styles2.panel}>
+          <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+          <TextInput 
+            keyboardType='numeric'
+            placeholder='amount'
+            style={{
+              fontSize:20,
+              marginLeft: 10,
+              height:45,
+              paddingHorizontal: 10,
+              width: '40%',
+              borderBottomWidth:2,
+              borderBottomColor:COLORS.blue,
+            }}
+            value = {inputs.amount}
+            multiline={true}
+            numberOfLines={1}
+            onChangeText = {(text) => handleOnChange(text,'amount')}
+          ></TextInput>
+          <Text>       
+            <SelectDropdown         
+              data={countriesWithFlags}
+              ref={dropdownRef} 
+              onSelect={(selectedItem, index) => {
+                //console.log(selectedItem, index);
+                console.log(selectedItem.title);
+                handleOnChange(selectedItem.title,'title')
+            }}
+              buttonStyle={styles2.dropdown3BtnStyle}
+              renderCustomizedButtonChild={(selectedItem, index) => {
+                return (
+                  <View style={styles2.dropdown3BtnChildStyle}>
+                    {selectedItem ? (
+                      <Image source={selectedItem.image} style={styles2.dropdown3BtnImage} />
+                    ) : (
+                      <Ionicons name="cart-outline" color={COLORS.brown4} size={32} />
+                    )}
+                    <Text style={styles2.dropdown3BtnTxt}>{selectedItem ? selectedItem.title : 'Select'}</Text>
+                    <FontAwesome name="chevron-down" color={COLORS.brown4} size={18} />
+                  </View>
+                );
+              }}
+              dropdownStyle={styles2.dropdown3DropdownStyle}
+              rowStyle={styles2.dropdown3RowStyle}
+              renderCustomizedRowChild={(item, index) => {
+                return (
+                  <View style={styles2.dropdown3RowChildStyle}>
+                    <Image source={item.image} style={styles2.dropdownRowImage} />
+                    <Text style={styles2.dropdown3RowTxt}>{item.title}</Text>
+                  </View>
+                );
+              }}
+            />
+
+          </Text>
+          </View>
+          <View style={{marginTop:10}}>
+            <TextInput 
+            placeholder='note'
+            style={{
+              height:60,  
+              width:styless.widowWidth-60,
+              padding:10,
+              borderColor: COLORS.blue,
+              borderWidth:1, 
+              marginLeft:10,    
+            }}
+            multiline= {true}
+            borderBottomWidth={3}
+            borderLeftWidth={3}
+            value = {inputs.description}
+            editable={true}
+            numberOfLines={2}
+            onChangeText = {(text) => handleOnChange(text,'description')}
+            ></TextInput>
+          </View>
+          <View style={{flexDirection:'row',justifyContent:'space-between',marginTop:10}}>
+            <TouchableOpacity onPress={()=>{
+
+                addExpense(info.token,inputs)
+                setReset(!reset)
+                sheetRef.current.snapTo(1)
+                dropdownRef.current.reset() 
+                setInputs("")
+              }}
+              >
+              <Text style={{fontSize:20}}>Ok</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => {
+                sheetRef.current.snapTo(1)
+                setInputs("")
+                dropdownRef.current.reset() 
+                }}>
+             <Text style={{fontSize:20}}>Cancel</Text>
+            </TouchableOpacity>
+          </View>
+      </View>
+  );
+  const renderHeader = ()=>(
+    <View style={styles2.header}>
+       <View style={styles2.panelHeader}>
+          <View style={styles2.panelHandle}>
+            
+          </View>
+       </View>
+   </View>
+  );
   return (
     <View style={styles.container}>
       <View style={{height:"25%"}}>
@@ -154,6 +282,16 @@ export default HomeScreen =( {navigation,route} )=>{
           
         </View>
         <View style={styles.list}>
+        <BottomSheet
+        snapPoints={[195,0]}
+        ref={sheetRef}
+        renderContent={renderInner}
+        renderHeader= {renderHeader}
+        initialSnap={1}
+        callbackNode={fall}
+        enabledGestureInteraction={true}
+        enabledContentTapInteraction={false} 
+        />
           <FlatList
             data={lists}
             keyExtractor = {item => item.key}
@@ -186,6 +324,7 @@ export default HomeScreen =( {navigation,route} )=>{
               right:20,
               bottom:20,
             }}
+            onPress={()=>{sheetRef.current.snapTo(0)}}
             >
             <AddButton2/>
           </TouchableOpacity>
@@ -241,14 +380,85 @@ const styles = StyleSheet.create({
     flex:1,
     flexGrow:1,
   },
+});
+
+const styles2 = StyleSheet.create({
+  panel: {
+    backgroundColor: COLORS.white,
+    paddingHorizontal:20,
+  },
+  header: {
+    backgroundColor: COLORS.blue,
+    shadowColor: COLORS.black,
+    shadowOffset: {width: -1, height: -3},
+    shadowRadius: 2,
+    shadowOpacity: 0.4,
+    // elevation: 5,
+    paddingTop: 10,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+  },
+  panelHeader: {
+    alignItems: 'center',
+  },
+  panelHandle: {
+    width: 40,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: COLORS.black,
+    marginBottom: 10,
+  },
+  panelTitle: {
+    backgroundColor:'blue',
+    fontSize: 27,
+    height: 35,
+  },
+  panelSubtitle: {
+    fontSize: 14,
+    color: 'gray',
+    height: 30,
+    backgroundColor:'red',
+    marginBottom: 10,
+  },
+  panelButton: {
+    padding: 13,
+    borderRadius: 10,
+    backgroundColor: COLORS.brown3,
+    alignItems: 'center',
+    marginVertical: 7,
+  },
+  panelButtonTitle: {
+    fontSize: 17,
+    fontWeight: 'bold',
+    color: 'white',
+  },
+  action: {
+    flexDirection: 'row',
+    marginTop: 10,
+    marginBottom: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f2f2f2',
+    paddingBottom: 5,
+  },
+  actionError: {
+    flexDirection: 'row',
+    marginTop: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#FF0000',
+    paddingBottom: 5,
+  },
+  textInput: {
+    flex: 1,
+    marginTop: Platform.OS === 'ios' ? 0 : -12,
+    paddingLeft: 10,
+    color: '#05375a',
+  },
   dropdown3BtnStyle: {
-    width: '50%',
+    width: '40%',
     height: 50,
     backgroundColor: COLORS.white,
     paddingHorizontal: 0,
-    borderWidth: 1,
     borderRadius: 5,
-    borderColor: COLORS.darkBlue,
   },
   dropdown3BtnChildStyle: {
     flex: 1,
@@ -257,18 +467,18 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 18,
   },
-  dropdown3BtnImage: {width: 45, height: 45, resizeMode: 'cover'},
+  dropdown3BtnImage: {width: 40, height: 40, resizeMode: 'cover'},
   dropdown3BtnTxt: {
     color: COLORS.brown4,
     textAlign: 'center',
     fontWeight: 'bold',
-    fontSize: 24,
+    fontSize: 20,
     marginHorizontal: 12,
   },
   dropdown3DropdownStyle: {backgroundColor: 'slategray'},
   dropdown3RowStyle: {
     backgroundColor:COLORS.white,
-    borderBottomColor: COLORS.darkBlue,
+    borderBottomColor: COLORS.brown2,
     height: 50,
   },
   dropdown3RowChildStyle: {
@@ -286,4 +496,4 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginHorizontal: 12,
   },
-});
+})

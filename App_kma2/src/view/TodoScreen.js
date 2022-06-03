@@ -2,7 +2,6 @@ import React, {useState,useEffect,useRef} from 'react';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import COLORS from '../components/colors';
 import {Calendar} from 'react-native-calendars'
-import salon from '../components/salon'
 import ItemBox from '../components/ItemBox';
 import {useDispatch,useSelector} from 'react-redux';
 import BottomSheet from 'reanimated-bottom-sheet';

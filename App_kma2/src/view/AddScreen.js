@@ -166,11 +166,6 @@ const AddScreen= ({navigation}) => {
             <TextInput 
               placeholder='note'
               style={{
-                // fontSize:20,
-                // marginLeft: 10,
-                // padding: 10,
-                // borderBottomWidth:2,
-                // borderBottomColor:COLORS.brown2,
                 height:100,  
                 width:'63%',
                 padding:10,
