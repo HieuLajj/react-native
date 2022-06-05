@@ -15,10 +15,11 @@ import {
 } from 'react-native';
 
 
-const AddButton2 = () =>{
+const AddButton2 = ({name,color}) =>{
         return(               
-                    <View style={styles.button}>
-                        <FontAwesome name={'plus'} size={24} color={'#fff'}></FontAwesome>
+                    <View style={[styles.button, {backgroundColor:color}]}>
+                        {/* <FontAwesome name={'plus'} size={24} color={'#fff'}></FontAwesome> */}
+                        <FontAwesome name={name} size={24} color={'#fff'}></FontAwesome>
                       {/* //  name= {focused? 'gr': colors.black} */}
                     </View>
                    
@@ -29,7 +30,6 @@ export default AddButton2;
 
 const styles= StyleSheet.create({
     button: {
-        backgroundColor:"#7f58ff",
         alignItems:'center',
         justifyContent: 'center',
         width:72,

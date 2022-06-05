@@ -406,7 +406,8 @@ function setSelectCategoryByName(_id) {
             //   '2022-05-21': {selected: true, marked: true, selectedColor: 'blue'},
             //   '2022-05-22': {selected: true, marked: true, selectedColor: 'blue'},
             // }
-            listDayMonth
+//Object.entries(listDayMonth)
+             listDayMonth
           }
             onDayPress={(e)=>{
              console.log(`e`,e);

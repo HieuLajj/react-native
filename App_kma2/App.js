@@ -35,8 +35,10 @@ import LoginScreen from './src/view/LoginScreen';
 import HomeScreen from './src/view/HomeScreen';
 import RegisterScreen from './src/view/RegisterScreen';
 import SalonListDentails from './src/view/SalonListDetails';
+import NoteDetails from './src/view/NoteDetails';
 import AddScreen from './src/view/AddScreen';
 import TodoScreen from './src/view/TodoScreen';
+import NoteScreen from './src/view/NoteScreen';
 import AddButton from './src/components/AddButton';
 import HomeButton from './src/components/HomeButton';
 import TodoButton from './src/components/TodoButton';
@@ -71,7 +73,7 @@ function MyTabs() {
          tabBarIcon:({focused}) => <TodoButton focused={focused}/>,
       }}/>
 
-      <Tab.Screen name="Add" component={AddScreen}   options={{
+      <Tab.Screen name="Add" component={NoteScreen}   options={{
         tabBarShowLabel: false,
        tabBarIcon: ({focused})=><AddButton  focused={focused}/>,  
        
@@ -152,6 +154,7 @@ const App= () => {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen}/>
         <Stack.Screen name="SalonList" component={SalonListDentails}/>
+        <Stack.Screen name="NoteList" component={NoteDetails}/>
         {/* <Stack.Screen name="HomeTab" component={MyTabs}/> */}
         <Stack.Screen name="MyDraw" component={MyDraws}/>
       </Stack.Navigator>

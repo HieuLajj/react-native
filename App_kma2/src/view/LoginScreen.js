@@ -5,6 +5,7 @@ import Button2 from '../components/Button2'
 import client from '../api/client';
 import {updateInfomation,updateEmail, updatePhone,updateName,updateToken,updateAvatar} from '../redux/actions/updateAction'
 import {useDispatch,useSelector} from 'react-redux';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {loginUser} from "../api/api_user"
 import {
     Image,
@@ -20,6 +21,7 @@ import {
     Animated,
 } from 'react-native';
 import Wave from 'react-native-waveview';
+import infoLog from 'react-native/Libraries/Utilities/infoLog';
 const SIGN_IN = 'SIGN_IN';
 const GET_STARTED = 'GET_STARTED';
 export default LoginScreen =( {navigation} )=>{
@@ -186,10 +188,13 @@ const GreenComponet = ({navigation}) => {
     const login = async(inputs) => {
         console.log(inputs)
         loginUser(inputs).then((data)=>{
+            //console.log("adadadadadadad");
+            //console.log(data.user.id);
+             AsyncStorage.setItem('user',JSON.stringify({id:data.user.id}));
                data.user.avatar?
-               dispatch(updateInfomation(data.user.email,data.user.name,data.user.phone,data.token,data.user.avg,data.user.avatar))
+               dispatch(updateInfomation(data.user.id,data.user.email,data.user.name,data.user.phone,data.token,data.user.avg,data.user.avatar))
                :
-               dispatch(updateInfomation(data.user.email,data.user.name,data.user.phone,data.token,data.user.avg,'https://sieupet.com/sites/default/files/pictures/images/1-1473150685951-5.jpg'))
+               dispatch(updateInfomation(data.user.id,data.user.email,data.user.name,data.user.phone,data.token,data.user.avg,'https://sieupet.com/sites/default/files/pictures/images/1-1473150685951-5.jpg'))
                if(data.success){
                     navigation.navigate('MyDraw',{token:data.token});
                 }          

@@ -6,6 +6,7 @@ export const CAP_NHAT_AVATAR = "CAP_NHAT_AVATAR";
 export const CAP_NHAT = "CAP_NHAT";
 
 const initialState = {
+    id:"",
     email: "",
     name: "",
     phone: "",
@@ -19,6 +20,7 @@ export default function actionForReducer(state = initialState, payload){
         case CAP_NHAT:
             return{
                 ...state,
+                id: payload.id,
                 email: payload.email,
                 name: payload.name,
                 phone: payload.phone,

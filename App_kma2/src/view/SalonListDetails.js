@@ -11,6 +11,7 @@ import {
   ScrollView,
   StatusBar,
   StyleSheet,
+  ImageBackground,
   Text,
   useColorScheme,
   View,
@@ -48,6 +49,9 @@ useEffect(() => {
 }, [])
   return (
     <View style={{flex:1,backgroundColor:item.color}}>
+       <ImageBackground
+          source={
+            require('../images/tien3.png')}>
       <View style={{height:'20%'}}>
         {/* <View style={[StyleSheet.absoluteFillObject,{backgroundColor:item.color,borderRadius:10}]}/> */}
         <View style={{justifyContent:'center', alignItems:'center'}}>
@@ -93,6 +97,7 @@ useEffect(() => {
             // }
             />
       </View>
+    </ImageBackground>
     </View>
   );
 };

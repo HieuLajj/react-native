@@ -326,7 +326,7 @@ export default HomeScreen =( {navigation,route} )=>{
             }}
             onPress={()=>{sheetRef.current.snapTo(0)}}
             >
-            <AddButton2/>
+            <AddButton2 name={'plus'} color={COLORS.blue}/>
           </TouchableOpacity>
         </View>
       </View>
