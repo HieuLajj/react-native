@@ -1,11 +1,12 @@
 
-import React, {useEffect} from 'react';
+import React, {useEffect,useContext} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { useNavigation } from '@react-navigation/native'
 import 'react-native-gesture-handler'
+import NoteProvider from './src/components/NoteProvider';
 //import Wave from 'react-native-waveview'
 import {
   SafeAreaView,
@@ -145,6 +146,7 @@ const App= () => {
   return (
   <Provider store={store}>
     <NavigationContainer>
+     <NoteProvider>
      <Stack.Navigator 
       initialRouteName="Login"
       screenOptions={{
@@ -158,7 +160,7 @@ const App= () => {
         {/* <Stack.Screen name="HomeTab" component={MyTabs}/> */}
         <Stack.Screen name="MyDraw" component={MyDraws}/>
       </Stack.Navigator>
-
+      </NoteProvider>
     </NavigationContainer>
   </Provider>
   );

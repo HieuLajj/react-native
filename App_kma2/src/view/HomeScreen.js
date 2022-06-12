@@ -31,7 +31,7 @@ export default HomeScreen =( {navigation,route} )=>{
   const [listsDay,setListsDay] = useState([]);
   const [listsMonth,setListsMonth] = useState([]);
   const [day, setday] = useState(TODAY);
-  const [money,setMoney] = useState();
+  const [money,setMoney] = useState(0);
   const [moneyDay, setMoneyDay] = useState(0);
   const [moneyMonth, setMoneyMonth] = useState(0);
   const [refreshControl,setRefreshControl] = useState(false)
@@ -43,23 +43,27 @@ export default HomeScreen =( {navigation,route} )=>{
   useEffect(() => {
     texttien= info.avg-moneyDay
     byCategory(info.token).then((data)=>{
+      if(data!=null){
       setLists(data.exp.today.map((item,index)=>({
         ...item,
         color: colors[index%colors.length],
         image: images2[item._id],
         key:index,
       })))
-      setMoney(data.exp.totalday.total)})},[])
+      
+      setMoney(data.exp.totalday.total)}
+    })},[])
   useEffect(() => {
     texttien= info.avg-moneyDay
     byCategory(info.token).then((data)=>{
+      if(data!=null){
       setLists(data.exp.today.map((item,index)=>({
         ...item,
         color: colors[index%colors.length],
         image: images2[item._id],
         key:index,
       })))
-      setMoney(data.exp.totalday.total)
+        setMoney(data.exp.totalday.total)
       setListsDay(data.exp.today.map((item,index)=>({
         ...item,
         color: colors[index%colors.length],
@@ -72,7 +76,7 @@ export default HomeScreen =( {navigation,route} )=>{
         image: images2[item._id],
         key:index,
       })))
-      setMoneyDay(data.exp.totalday.total)
+        setMoneyDay(data.exp.totalday.total)
       setMoneyMonth(data.exp.totalmonth.total)
       if(day==TODAY && listsDay!=""){
         setLists(listsDay)
@@ -81,7 +85,7 @@ export default HomeScreen =( {navigation,route} )=>{
       if(day==MONTH && listsDay!=""){
         setLists(listsMonth)
         setMoney(moneyMonth)
-      }
+      }}
     })
   },[reset])
   const [inputs, setInputs] = useState({
@@ -292,6 +296,8 @@ export default HomeScreen =( {navigation,route} )=>{
         enabledGestureInteraction={true}
         enabledContentTapInteraction={false} 
         />
+          {lists.length ? 
+           
           <FlatList
             data={lists}
             keyExtractor = {item => item.key}
@@ -318,6 +324,10 @@ export default HomeScreen =( {navigation,route} )=>{
               />
             }
             />
+            : <View>
+              <Text>fhae</Text>
+              </View>
+          }
             <TouchableOpacity 
               style={{
               position: 'absolute',

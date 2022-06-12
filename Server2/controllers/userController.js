@@ -1,6 +1,7 @@
 const jwt =  require('jsonwebtoken');
 const User = require("../models/user");
 const sharp = require('sharp');
+const bcrypt = require('bcrypt');
 const cloudinary = require('../helper/imageUpload')
 const userController = {
     //ADD USER
@@ -27,7 +28,6 @@ const userController = {
     //SIGN IN
     userSignIn: async(req,res)=>{
         const { email, password } = req.body;
-        console.log("ffwfaewfa");
        // req.profile="hieu"
       //  console.log(req.profile);
         const user = await User.findOne({ email });
@@ -45,7 +45,17 @@ const userController = {
             message: 'email / password does not match!',
           });
         const token =  jwt.sign({userId: user._id}, process.env.JWT_SECRET, {expiresIn:'1d'});
+        let oldTokens = user.tokens || [];
 
+        if (oldTokens.length) {
+          oldTokens = oldTokens.filter(t => {
+            const timeDiff = (Date.now() - parseInt(t.signedAt)) / 1000;
+            if (timeDiff < 86400) {
+              return t;
+            }
+          });
+        }
+        await User.findByIdAndUpdate(user._id, {tokens:[...oldTokens, {token, signedAt: Date.now().toString()}]})       
         const userInfo = {
           id: user.id,
           name: user.name,
@@ -57,6 +67,85 @@ const userController = {
         }
         res.json({success: true,user:userInfo, token})
     },
+  
+  userSignIn2: async (req,res) =>{
+    console.log("siginIn2")
+    const {token} = req?.params;
+    if(!req.user){
+      return res.json({success: false, message: 'phien da het han!'});}
+      const userInfo = {
+        id: req.user.id,
+        name: req.user.name,
+        email: req.user.email,
+        phone: req.user.phone,
+        avg: req.user.avg,
+       // password: user.password,
+        avatar: req.user.avatar ? req.user.avatar : '',
+      }
+      res.json({success: true,user:userInfo,token})
+  },
+  userSignOut: async (req,res) =>{
+    if (req.headers && req.headers.authorization) {
+      const token = req.headers.authorization.split(' ')[1];
+      if (!token) {
+        return res
+          .status(401)
+          .json({ success: false, message: 'Authorization fail!' });
+      }
+  
+      const tokens = req.user.tokens;
+  
+      const newTokens = tokens.filter(t => t.token !== token);
+  
+      await User.findByIdAndUpdate(req.user._id, { tokens: newTokens });
+      res.json({ success: true, message: 'Sign out successfully!' });
+    }
+  },
+  // update
+  updateProfileMain: async (req,res) => {
+    const {id} = req?.params;
+
+    bcrypt.hash(req.body.password, 8, async (err, hash) => {
+      if (err) return next(err);
+      req.body.password = hash;
+      const { name, email, phone, password, avg } = req.body;
+      console.log(password)
+      try {
+        console.log("------------------------")
+        const exp = await User.findByIdAndUpdate(
+          id,
+          {
+            name,
+            email,
+            phone,
+            password,
+            avg
+          },
+          { new: true, runValidators: true }
+          )
+          res.json({success: true, exp});
+      } catch (error) {
+        res.json(error)
+      }
+    })
+   // const { name, email, phone, password } = req.body;
+    // try {
+    //   const exp = await User.findByIdAndUpdate(
+    //     id,
+    //     {
+    //       name,
+    //       email,
+    //       phone,
+    //       password,
+    //     },
+    //     { new: true, runValidators: true }
+    //     )
+    //     res.json({success: true, exp});
+    // } catch (error) {
+    //   res.json(error)
+    // }
+  }, 
+
   //UPLOAD PROFILE
     uploadProfile : async (req,res)=>{
       const {user} = req;

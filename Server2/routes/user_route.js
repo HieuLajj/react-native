@@ -20,6 +20,10 @@ router.post("/add_user",validateUserSignUp,userVlidation,userController.add_user
 
 // SIGN IN
 router.post('/sign_in',validateUserSignIn,userVlidation,userController.userSignIn);
+// SIGN IN TOKEN
+router.post('/sign_in2/:token', isAuth, userController.userSignIn2)
+//SIGN OUT
+router.get('/sign_out', isAuth, userController.userSignOut)
 
 //UPLOAD_PROFILE
 {profile: 'image'}
@@ -28,4 +32,6 @@ router.post('/upload_profile',isAuth, uploads.single('profile'),userController.u
 //GET ALL AUTHORS
 router.get("/",userController.getAllAuthors);
 
+// update profile
+router.put('/update/:id',isAuth,userController.updateProfileMain);
 module.exports = router;

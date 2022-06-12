@@ -1,5 +1,5 @@
 
-import React, {useEffect,useState,useRef} from 'react';
+import React, {useEffect,useState,useRef,useContext} from 'react';
 import COLORS from '../components/colors';
 import {useDispatch,useSelector} from 'react-redux';
 import ItemBox2 from '../components/ItemBox2';
@@ -10,12 +10,14 @@ import SelectDropdown from 'react-native-select-dropdown';
 import styless from '../components/styless';
 import BottomSheet from 'reanimated-bottom-sheet';
 import Note from '../components/Note';
+import {useNotes} from '../components/NoteProvider';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import Animated from 'react-native-reanimated';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import {listbyuser,byDay,byMonth} from '../api/api_expense'
 import {colors,images2,countriesWithFlags} from '../components/salon2';
 //import Wave from 'react-native-waveview'
+
 import {
   SafeAreaView,
   ScrollView,
@@ -32,10 +34,14 @@ import {
 } from 'react-native';
 import { findFocusedRoute } from '@react-navigation/native';
 
-
 const NoteScreen= ({navigation}) => {
-    const [notes, setNotes] = useState([]);
+   // const [notes, setNotes] = useState([]);
+    const { notes, setNotes} = useNotes();
+    const [searchQuery, setSearchQuery] = useState('');
+    const [resultNotFound, setResultNotFound] = useState(false);
+    //const [notes, setNotes] = useNotes();
     const [reset,setReset] = useState(false)
+     
     const sheetRef = useRef(null);
     const fall = new Animated.Value(1);
     const dropdownRef = useRef({});
@@ -59,6 +65,31 @@ const NoteScreen= ({navigation}) => {
        sheetRef.current.snapTo(1)             
        setInputs("")
     }
+    const handleOnSearchInput = async text => {
+      setSearchQuery(text);
+      if (!text.trim()) {
+        console.log('aaaa');
+        setSearchQuery('');
+        setResultNotFound(false);
+        return await findNotes();
+      }
+      const filteredNotes = notes.filter(note => {
+        if (note.title.toLowerCase().includes(text.toLowerCase())) {
+          return note;
+        }
+      });
+  
+      if (filteredNotes.length) {
+        setNotes([...filteredNotes]);
+      } else {
+        setResultNotFound(true);
+      }
+    };
+    const handleOnClear = async () => {
+      setSearchQuery('');
+      setResultNotFound(false);
+      await findNotes();
+    };
     const findUser = async () =>{
          result = await AsyncStorage.getItem('user');
          console.log(result);
@@ -162,7 +193,7 @@ const NoteScreen= ({navigation}) => {
         enabledGestureInteraction={true}
         enabledContentTapInteraction={false} 
         />
-        <SearchBar containerStyle={{margin:10}}/>
+        <SearchBar value={searchQuery} onChangeText={handleOnSearchInput}  onClear={handleOnClear} containerStyle={{margin:10}}/>
         <FlatList data={notes}
                   numColumns = {2}
                   columnWrapperStyle={{justifyContent:'space-between',margin:10}}

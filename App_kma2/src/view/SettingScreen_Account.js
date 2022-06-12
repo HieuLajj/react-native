@@ -22,10 +22,24 @@ import {
 } from 'react-native';
 import COLORS from '../components/colors';
 import ImagePicker from 'react-native-image-crop-picker';
+import {updateMember} from "../api/api_user"
 
 
 
 const SettingScreen_Account= (props) => {
+  const [inputs, setInputs] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    password: '',
+    avg: 250000,
+  });
+  const handleOnChange = (text,input) => {
+    setInputs(prevState=>({...prevState,[input]:text}));
+  };
+  const handleOnChange2 = (text,input) => {
+    setInputs(prevState=>({...prevState,[input]:parseInt(text)}));
+  };
     const info = useSelector((state)=>state.personalInfo)
     const [image, setImage] = useState('https://sieupet.com/sites/default/files/pictures/images/1-1473150685951-5.jpg');
     const [progress, setProgress] = useState(0)
@@ -174,22 +188,35 @@ const SettingScreen_Account= (props) => {
                 <Input 
                   iconName="email-outline" 
                   placeholder= {info.email}
+                  onChangeText = {(text) => handleOnChange(text,'email')}
                 />
                 <Input 
                   iconName="account-outline" 
                   placeholder= {info.name}
+                  onChangeText = {(text) => handleOnChange(text,'name')}
                 />
                 <Input 
                   keyboardType="numeric"
                   iconName="phone-outline" 
                   placeholder= {info.phone}
+                  onChangeText = {(text) => handleOnChange(text,'phone')}
                 />
                 <Input 
                   iconName="lock-outline" 
                   placeholder="Enter your password"
+                  onChangeText = {(text) => handleOnChange(text,'password')}
                  />
+                <Input 
+                  iconName="bitcoin" 
+                  keyboardType = 'numeric'
+                  placeholder= {info.avg + ""}
+                  onChangeText = {(text) => handleOnChange2(text,'avg')}
+                />
                  <View style={{marginTop:20}}>
-                   <Button2 title="Submit" onPress={()=>{uploadProfileImage({image})}}/>
+                   <Button2 title="Submit" onPress={()=>{                    
+                    uploadProfileImage({image})
+                    updateMember(info.token,info.id,inputs)
+                    }}/>
                  </View>
                  
               </View>

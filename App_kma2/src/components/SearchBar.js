@@ -12,15 +12,7 @@ const SearchBar = ({ containerStyle, value, onClear, onChangeText }) => {
           placeholder='Search here..'
         />
         {value ? (
-             <FontAwesome name="pie-chart" color={COLORS.black} size={30} />
-        
-             //   <AntDesign
-        //     name='close'
-        //     size={20}
-        //     color={COLORS.brown4}
-        //     onPress={onClear}
-        //     style={styles.clearIcon}
-        //   />
+             <FontAwesome name="times" onPress={onClear} color={COLORS.black} size={30} style={styles.clearIcon} />
         ) : null}
       </View>
     );

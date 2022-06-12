@@ -38,8 +38,7 @@ const SettingScreen= (props) => {
         </View>
         <View style={{marginTop:10}}>
           <Button3 title="Account" iconName="account"  onPress={()=>{props.navigation.navigate('SettingAccount')}}/>
-          <Button3 title="Account" iconName="store-settings"  onPress={()=>{}}/>
-          <Button3 title="Account" iconName="archive-settings"  onPress={()=>{}}/>
+          <Button3 title="System" iconName="store-settings"  onPress={()=>{}}/>
         </View>
         {/* <Text>{info.email}</Text>
         <Text>{info.name}</Text>

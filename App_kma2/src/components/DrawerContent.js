@@ -1,4 +1,5 @@
 import React from 'react';
+import {logoutUser} from "../api/api_user"
 import {Avatar,Title,Caption,Paragraph,Drawer,TouchableRipple,Switch} from 'react-native-paper'
 import {View, Text, StyleSheet,ImageBackground} from 'react-native';
 import {useSelector} from 'react-redux';
@@ -82,7 +83,15 @@ export function DrawerContent(props){
                         />)
                     }
                     label="Signs Out"
-                    onPress={()=>{}}
+                    onPress={()=>{
+
+                      logoutUser().then((data)=>{
+                       if(data==true){
+                        console.log("hahahahaha");
+                        props.navigation.navigate('Login')
+                       }      
+                 })
+                    }}
                 />
             </Drawer.Section>
         </View>

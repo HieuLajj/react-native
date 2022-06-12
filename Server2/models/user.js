@@ -28,7 +28,8 @@ const userSchema = new mongoose.Schema({
     avg:{
         type: Number,
         default: 500000,
-    }
+    },
+    tokens: [{type: Object}]
 });
 
 userSchema.pre('save', function (next) {
@@ -41,6 +42,7 @@ userSchema.pre('save', function (next) {
       });
     }
   });
+
 
 userSchema.methods.comparePassword = async function (password) {
     if (!password) throw new Error('Password is mission, can not compare!');
