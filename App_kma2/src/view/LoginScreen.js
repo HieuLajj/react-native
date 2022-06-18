@@ -19,6 +19,7 @@ import {
     TextInput,
     Keyboard, 
     Animated,
+    Alert
 } from 'react-native';
 import Wave from 'react-native-waveview';
 import infoLog from 'react-native/Libraries/Utilities/infoLog';
@@ -212,15 +213,37 @@ const GreenComponet = ({navigation}) => {
             //console.log("adadadadadadad");
             //console.log(data.user.id);
             // AsyncStorage.setItem('user',JSON.stringify({id:data.user.id}));
-               data.user.avatar?
-               dispatch(updateInfomation(data.user.id,data.user.email,data.user.name,data.user.phone,data.token,data.user.avg,data.user.avatar))
-               :
-               dispatch(updateInfomation(data.user.id,data.user.email,data.user.name,data.user.phone,data.token,data.user.avg,'https://sieupet.com/sites/default/files/pictures/images/1-1473150685951-5.jpg'))
+            //    data.user.avatar?
+            //    dispatch(updateInfomation(data.user.id,data.user.email,data.user.name,data.user.phone,data.token,data.user.avg,data.user.avatar))
+            //    :
+            //    dispatch(updateInfomation(data.user.id,data.user.email,data.user.name,data.user.phone,data.token,data.user.avg,'https://sieupet.com/sites/default/files/pictures/images/1-1473150685951-5.jpg'))
                if(data.success){
-                    navigation.navigate('MyDraw',{token:data.token});
+                Alert.alert('Thông báo!','Đăng nhập thành công!',[
+                    {
+                      text: 'Tiếp tục',
+                      onPress: ()=>{
+                        setInputs("")
+                        data.user.avatar?
+                           dispatch(updateInfomation(data.user.id,data.user.email,data.user.name,data.user.phone,data.token,data.user.avg,data.user.avatar))
+                           :
+                           dispatch(updateInfomation(data.user.id,data.user.email,data.user.name,data.user.phone,data.token,data.user.avg,'https://sieupet.com/sites/default/files/pictures/images/1-1473150685951-5.jpg'))
+                        navigation.navigate('MyDraw',{token:data.token});}
+                    }
+                  ],{
+                    cancelable: true,
+                  })}
+                else{
+                    Alert.alert('Thông báo!',"Đăng nhập thất bại!",[
+                        {
+                          text: 'Tiếp tục',
+                          onPress: ()=>{}
+                        }
+                      ],{
+                        cancelable: true,
+                      })  
                 }          
         })
-        setInputs("")
+       
     }
 
     return(

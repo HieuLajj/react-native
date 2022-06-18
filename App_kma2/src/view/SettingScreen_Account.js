@@ -1,6 +1,6 @@
 
 import React,{useEffect,useState} from 'react';
-import {useSelector} from 'react-redux';
+import {useDispatch,useSelector} from 'react-redux';
 import {updateEmail} from '../redux/actions/updateAction'
 import Icon  from 'react-native-vector-icons/MaterialCommunityIcons' 
 import FontAwesome  from 'react-native-vector-icons/FontAwesome'
@@ -23,10 +23,11 @@ import {
 import COLORS from '../components/colors';
 import ImagePicker from 'react-native-image-crop-picker';
 import {updateMember} from "../api/api_user"
-
+import {updateInfomation} from '../redux/actions/updateAction'
 
 
 const SettingScreen_Account= (props) => {
+  const dispatch = useDispatch();
   const [inputs, setInputs] = useState({
     name: '',
     email: '',
@@ -216,6 +217,7 @@ const SettingScreen_Account= (props) => {
                    <Button2 title="Submit" onPress={()=>{                    
                     uploadProfileImage({image})
                     updateMember(info.token,info.id,inputs)
+                    dispatch(updateInfomation(info.id,inputs.email,inputs.name,inputs.phone,info.token,inputs.avg,image))
                     }}/>
                  </View>
                  

@@ -43,41 +43,48 @@ export default HomeScreen =( {navigation,route} )=>{
   useEffect(() => {
     texttien= info.avg-moneyDay
     byCategory(info.token).then((data)=>{
-      if(data!=null){
+     
+     
       setLists(data.exp.today.map((item,index)=>({
         ...item,
         color: colors[index%colors.length],
         image: images2[item._id],
         key:index,
       })))
-      
+      if(data.exp.totalday!=undefined){
       setMoney(data.exp.totalday.total)}
     })},[])
   useEffect(() => {
+    
     texttien= info.avg-moneyDay
     byCategory(info.token).then((data)=>{
-      if(data!=null){
       setLists(data.exp.today.map((item,index)=>({
         ...item,
         color: colors[index%colors.length],
         image: images2[item._id],
         key:index,
       })))
-        setMoney(data.exp.totalday.total)
+      if(data.exp.totalday!=undefined){
+        setMoney(data.exp.totalday.total)}
       setListsDay(data.exp.today.map((item,index)=>({
         ...item,
         color: colors[index%colors.length],
         image: images2[item._id],
         key:index,
       })))
+      if(data.exp.totalday!=undefined){
+      setMoneyDay(data.exp.totalday.total)
+    }
+    
       setListsMonth(data.exp.month.map((item,index)=>({
         ...item,
         color: colors[index%colors.length],
         image: images2[item._id],
         key:index,
       })))
-        setMoneyDay(data.exp.totalday.total)
+      if(data.exp.totalmonth!=undefined){
       setMoneyMonth(data.exp.totalmonth.total)
+    }
       if(day==TODAY && listsDay!=""){
         setLists(listsDay)
         setMoney(moneyDay)
@@ -85,7 +92,7 @@ export default HomeScreen =( {navigation,route} )=>{
       if(day==MONTH && listsDay!=""){
         setLists(listsMonth)
         setMoney(moneyMonth)
-      }}
+      }
     })
   },[reset])
   const [inputs, setInputs] = useState({
@@ -324,8 +331,8 @@ export default HomeScreen =( {navigation,route} )=>{
               />
             }
             />
-            : <View>
-              <Text>fhae</Text>
+            : <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+              <Text style={{fontSize:20,opacity:0.5}}>no infomation</Text>
               </View>
           }
             <TouchableOpacity 

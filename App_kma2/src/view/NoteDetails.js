@@ -52,7 +52,7 @@ const NoteDetails = (props) => {
     const newNotes = notes.filter(n => {
       if (n.id === note.id) {
         n.title = inputs.title;
-        n.desc = inputs.description;
+        n.description = inputs.description;
         n.time = Date.now();
         setNote(n);
       }
@@ -86,13 +86,13 @@ const NoteDetails = (props) => {
     props.navigation.goBack();
   };
   const displayDeleteAlert = () =>{
-    Alert.alert('Are You Sure!','This action will delete your note permanetly!',[
+    Alert.alert('Bạn có chắc chắn không!','Hành động này sẽ xóa ghi chú của bạn ngay lập tức!',[
       {
-        text: 'Delete',
+        text: 'Xóa',
         onPress:deleteNote        //()=>{console.log('delete note')}
       },
       {
-        text: 'No Thanks',
+        text: 'Không',
         onPress:()=>{
           console.log("no thanks")
         }

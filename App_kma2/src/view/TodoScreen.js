@@ -27,12 +27,12 @@ import SelectDropdown from 'react-native-select-dropdown';
 
 
 
-const TodoScreen= () => {
+const TodoScreen= ({navigation}) => {
 const [reset,setReset] = useState(false)
 const [viewMode, setViewMode] = useState("chart")
 const [lists,setLists] = useState([]);
 const [lists2,setLists2] = useState([]);
-const [listDayMonth, setListDayMonth] = useState([]);
+const [listDayMonth, setListDayMonth] = useState({});
 const [selectedCategory, setSelectedCategory] = useState(null)
 const info = useSelector((state)=>state.personalInfo)
 const [refreshControl,setRefreshControl] = useState(false)
@@ -391,7 +391,7 @@ function setSelectCategoryByName(_id) {
     )
   }
 
-  function renderCalendar(){
+  function renderCalendar({navigation}){
     
     return(
       <View>
@@ -410,7 +410,9 @@ function setSelectCategoryByName(_id) {
              listDayMonth
           }
             onDayPress={(e)=>{
-             console.log(`e`,e);
+            // console.log(`e`,e.dateString);
+             navigation.navigate('TodayList',{mm:{e}});
+            // navigation.navigate('SalonList',{dataitem: {item},data: day});
            }}
          />
       </View>
@@ -442,7 +444,7 @@ function setSelectCategoryByName(_id) {
         {
           viewMode =="calendar" &&
           <View  style={{flex:1}}>
-            {renderCalendar()}
+            {renderCalendar({navigation})}
           </View>
         }
     </View>

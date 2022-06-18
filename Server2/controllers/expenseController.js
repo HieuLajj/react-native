@@ -33,11 +33,30 @@ const expenseController = {
     //fetch single income
     fetch_single: async (req,res) => {
       console.log(req.user._id);
+      // try {
+      //   const exp = await Expense.find({'user':req.user.id});
+      //   res.json({success: true, exp});
+      // } catch (error) {
+      //   res.json(error);
+      // }
       try {
-        const exp = await Expense.find({'user':req.user.id});
+             
+        let exp = await Expense.aggregate([              
+            {$match: { 
+              user: mongoose.Types.ObjectId(req.user._id)
+            }},
+            {$project: {
+              created: { $dateToString: { format: "%Y-%m-%d %H:%M:%S", date: "$created" } },
+               _id: true,
+               title: true,
+               description: true,
+               amount: true,
+               user:true,
+            }},                     
+          ])            
         res.json({success: true, exp});
       } catch (error) {
-        res.json(error);
+        res.json(error)
       }
     },
     
@@ -144,6 +163,41 @@ const expenseController = {
         }
     },
 
+    expenseDayinMonth: async (req,res)=>{
+        const {dayM} = req?.params;
+      //  const dateString = "2020-05-15";
+        const year = +dayM.substring(0, 4);
+        const month = +dayM.substring(5, 7);
+        const day = +dayM.substring(8, 10);
+      
+        const firstDay = new Date(year, month-1, day)
+        const lastDay = new Date(year, month-1, day+1)
+       
+         try {
+           
+          let exp = await Expense.aggregate([              
+              {$match: { 
+                created: { $gte : firstDay, $lt: lastDay },
+               // created: { $in: firstDay},
+                user: mongoose.Types.ObjectId(req.user._id)
+              }}, 
+              {$project: {
+                // dayMonthYear: { $dateToString: { format: "%d/%m/%Y", date: "$created" } },
+                created: { $dateToString: { format: "%H:%M:%S", date: "$created" } },
+                 //  '2022-05-16': {selected: true, marked: true, selectedColor: 'blue'},
+                 _id: true,
+                 title: true,
+                 description: true,
+                 amount: true,
+                 user:true,
+              }},               
+            ])            
+          res.json({success: true, exp});
+        } catch (error) {
+          res.json(error)
+        }
+    },
+
     expenseByDay : async (req,res)=>{
           const {id} = req?.params;
           const today = new Date()
@@ -159,7 +213,17 @@ const expenseController = {
                   created: { $gte : today, $lt: tomorrow },
                   user: mongoose.Types.ObjectId(req.user._id)
                   ,title:  id
-                }},               
+                }},
+                {$project: {
+                  // dayMonthYear: { $dateToString: { format: "%d/%m/%Y", date: "$created" } },
+                  created: { $dateToString: { format: "%Y-%m-%d %H:%M:%S", date: "$created" } },
+                   //  '2022-05-16': {selected: true, marked: true, selectedColor: 'blue'},
+                   _id: true,
+                   title: true,
+                   description: true,
+                   amount: true,
+                   user:true,
+                }},                     
               ])            
             res.json({success: true, exp});
           } catch (error) {
@@ -178,6 +242,16 @@ const expenseController = {
                 created: { $gte : firstDayMonth, $lt: lastDayMonth },
                 user: mongoose.Types.ObjectId(req.user._id)
                 ,title:  id
+              }}, 
+              {$project: {
+                // dayMonthYear: { $dateToString: { format: "%d/%m/%Y", date: "$created" } },
+                created: { $dateToString: { format: "%Y-%m-%d %H:%M:%S", date: "$created" } },
+                 //  '2022-05-16': {selected: true, marked: true, selectedColor: 'blue'},
+                 _id: true,
+                 title: true,
+                 description: true,
+                 amount: true,
+                 user:true,
               }},               
             ])            
           res.json({success: true, exp});

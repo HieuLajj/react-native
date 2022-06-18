@@ -36,6 +36,7 @@ import LoginScreen from './src/view/LoginScreen';
 import HomeScreen from './src/view/HomeScreen';
 import RegisterScreen from './src/view/RegisterScreen';
 import SalonListDentails from './src/view/SalonListDetails';
+import TodayListDelta from './src/view/TodayListDelta';
 import NoteDetails from './src/view/NoteDetails';
 import AddScreen from './src/view/AddScreen';
 import TodoScreen from './src/view/TodoScreen';
@@ -157,6 +158,7 @@ const App= () => {
         <Stack.Screen name="Register" component={RegisterScreen}/>
         <Stack.Screen name="SalonList" component={SalonListDentails}/>
         <Stack.Screen name="NoteList" component={NoteDetails}/>
+        <Stack.Screen name="TodayList" component={TodayListDelta}/>
         {/* <Stack.Screen name="HomeTab" component={MyTabs}/> */}
         <Stack.Screen name="MyDraw" component={MyDraws}/>
       </Stack.Navigator>

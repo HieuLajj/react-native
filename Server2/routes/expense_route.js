@@ -14,4 +14,5 @@ router.get('/expenseByCategory',isAuth,expenseCtrl.expenseByCategory);
 router.get('/expenseByDay/:id',isAuth,expenseCtrl.expenseByDay);
 router.get('/expenseByMonth/:id',isAuth,expenseCtrl.expenseByMonth);
 router.get('/expenseDayMonth',isAuth,expenseCtrl.expenseDayVsMonth);
+router.get('/expenseDayinMonth/:dayM',isAuth,expenseCtrl.expenseDayinMonth);
 module.exports = router;

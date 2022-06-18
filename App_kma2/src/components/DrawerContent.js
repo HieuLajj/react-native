@@ -1,7 +1,7 @@
 import React from 'react';
 import {logoutUser} from "../api/api_user"
 import {Avatar,Title,Caption,Paragraph,Drawer,TouchableRipple,Switch} from 'react-native-paper'
-import {View, Text, StyleSheet,ImageBackground} from 'react-native';
+import {View, Text, StyleSheet,ImageBackground,Alert} from 'react-native';
 import {useSelector} from 'react-redux';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons'
 import {DrawerContentScrollView, DrawerItem} from '@react-navigation/drawer'
@@ -83,14 +83,26 @@ export function DrawerContent(props){
                         />)
                     }
                     label="Signs Out"
-                    onPress={()=>{
-
-                      logoutUser().then((data)=>{
-                       if(data==true){
-                        console.log("hahahahaha");
-                        props.navigation.navigate('Login')
-                       }      
-                 })
+                    onPress={()=>{                      
+                        Alert.alert('Thông báo!','Đăng xuất khỏi hệ thống!',[
+                          {
+                            text: 'Đồng ý',
+                            onPress: ()=>{logoutUser().then((data)=>{
+                                              if(data==true){
+                                                console.log("hahahahaha");
+                                                props.navigation.navigate('Login')
+                                              }      
+                             })}
+                          },
+                          {
+                            text: 'Thoát',
+                            onPress:()=>{
+                              console.log("no thanks")
+                            }
+                          }
+                        ],{
+                          cancelable: true,
+                        })               
                     }}
                 />
             </Drawer.Section>
