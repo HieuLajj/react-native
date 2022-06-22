@@ -24,14 +24,18 @@ import styless from '../components/styless';
 import {colors,images2,countriesWithFlags} from '../components/salon2';
 import Animated from 'react-native-reanimated';
 import SelectDropdown from 'react-native-select-dropdown';
-
+import AppDelete from '../components/AppDelete';
+import AppFix from '../components/AppFix';
 
 
 const TodoScreen= ({navigation}) => {
+const [deletePending, setDeletePending] = useState(false);
+const [fixPending, setFixPending] = useState(false);
 const [reset,setReset] = useState(false)
 const [viewMode, setViewMode] = useState("chart")
 const [lists,setLists] = useState([]);
 const [lists2,setLists2] = useState([]);
+const [page,setPage] = useState(1);
 const [listDayMonth, setListDayMonth] = useState({});
 const [selectedCategory, setSelectedCategory] = useState(null)
 const info = useSelector((state)=>state.personalInfo)
@@ -41,7 +45,7 @@ const dropdownRef = useRef({});
 const fall = new Animated.Value(1);
 
 useEffect(() => {
-  listbyuser(info.token).then((data)=>{
+  listbyuser(info.token,page).then((data)=>{
   setLists(data.exp.map((item,index)=>({
     ...item,
     color: colors[index%colors.length],
@@ -60,6 +64,16 @@ useEffect(() => {
 
 }, [reset])
 
+useEffect(() => {
+  listbyuser(info.token,page).then((data)=>{
+  setLists(data.exp.map((item,index)=>({
+    ...item,
+    color: colors[index%colors.length],
+    image: images2[item.title],
+  })))
+  })
+
+}, [page])
 const [inputs, setInputs] = useState({
   title: 'Other',
   description: '',
@@ -142,8 +156,12 @@ const handleOnChange = (text,input) => {
     )
   }
 
-  function renderCategoryList(){
+  function renderCategoryList({setDeletePending,setFixPending}){
     const deleteItem= (id,index)=>{
+      setDeletePending(true)
+      setTimeout(function () {
+        setDeletePending(false)
+      }, 2000);
       const arr=[...lists];
       arr.splice(index,1);
       setLists(arr);
@@ -235,6 +253,10 @@ const handleOnChange = (text,input) => {
             </View>
             <View style={{flexDirection:'row',justifyContent:'space-between',marginTop:10}}>
               <TouchableOpacity onPress={()=>{
+                setFixPending(true)
+                setTimeout(function () {
+                   setFixPending(false)
+                }, 1000);
                 updateExpense(info.token,id_update,inputs)
                 setReset(!reset)
                 sheetRef.current.snapTo(1)
@@ -289,10 +311,21 @@ const handleOnChange = (text,input) => {
                 setRefreshControl(true)
                 setReset(!reset)
                 setRefreshControl(false)
+                page!=1 ? setPage(page-1): null
               }} colors={['red']}
               />
             }
+            onScrollToTop={console.log('hey')}
+            onMomentumScrollBegin={() => console.log("TRUE")}
+            onMomentumScrollEnd={() =>console.log("False")}
+            onEndReached={({ distanceFromEnd }) =>
+             {if(distanceFromEnd<=0.5){lists.length==10 ? setPage(page+1): null}
+             }
+            }
+            onS
             />
+      {deletePending ? <AppDelete/> : null}
+      {fixPending ? <AppFix/> : null}
       </View>
     )
   }
@@ -426,7 +459,7 @@ function setSelectCategoryByName(_id) {
         {
           viewMode == "list" &&
           <View  style={{flex:1}}>
-           {renderCategoryList()}
+           {renderCategoryList({setDeletePending,setFixPending})}
           </View>
         }           
         {

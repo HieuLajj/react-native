@@ -33,30 +33,54 @@ const expenseController = {
     //fetch single income
     fetch_single: async (req,res) => {
       console.log(req.user._id);
-      // try {
-      //   const exp = await Expense.find({'user':req.user.id});
-      //   res.json({success: true, exp});
-      // } catch (error) {
-      //   res.json(error);
-      // }
-      try {
+      var page = req.query.page;
+      if(page){
+        page = parseFloat(page)
+        if(page < 1){page =1}
+        var soLuongBoQua = (page -1) *10;
+        try {
              
-        let exp = await Expense.aggregate([              
-            {$match: { 
-              user: mongoose.Types.ObjectId(req.user._id)
-            }},
-            {$project: {
-              created: { $dateToString: { format: "%Y-%m-%d %H:%M:%S", date: "$created" } },
-               _id: true,
-               title: true,
-               description: true,
-               amount: true,
-               user:true,
-            }},                     
-          ])            
-        res.json({success: true, exp});
-      } catch (error) {
-        res.json(error)
+          let exp = await Expense.aggregate([              
+              {$match: { 
+                user: mongoose.Types.ObjectId(req.user._id)
+              }},
+              {$project: {
+                created: { $dateToString: { format: "%Y-%m-%d %H:%M:%S", date: "$created" } },
+                 _id: true,
+                 title: true,
+                 description: true,
+                 amount: true,
+                 user:true,
+              }},                     
+            ]).skip(soLuongBoQua).limit(10)    
+          res.json({success: true, exp});
+        } catch (error) {
+          res.json(error)
+        }
+
+
+
+      }else{
+      
+        try {
+             
+          let exp = await Expense.aggregate([              
+              {$match: { 
+                user: mongoose.Types.ObjectId(req.user._id)
+              }},
+              {$project: {
+                created: { $dateToString: { format: "%Y-%m-%d %H:%M:%S", date: "$created" } },
+                 _id: true,
+                 title: true,
+                 description: true,
+                 amount: true,
+                 user:true,
+              }},                     
+            ])         
+          res.json({success: true, exp});
+        } catch (error) {
+          res.json(error)
+        }
       }
     },
     

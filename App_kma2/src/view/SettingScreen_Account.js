@@ -10,6 +10,7 @@ import Animated from 'react-native-reanimated';
 import Input from '../components/Input';
 import client from '../api/client'
 import Button2 from '../components/Button2';
+import AppLoader from '../components/AppLoader';
 import {
   ImageBackground,
   StyleSheet,
@@ -27,6 +28,7 @@ import {updateInfomation} from '../redux/actions/updateAction'
 
 
 const SettingScreen_Account= (props) => {
+  const [loginPending, setLoginPending] = useState(false);
   const dispatch = useDispatch();
   const [inputs, setInputs] = useState({
     name: '',
@@ -214,9 +216,16 @@ const SettingScreen_Account= (props) => {
                   onChangeText = {(text) => handleOnChange2(text,'avg')}
                 />
                  <View style={{marginTop:20}}>
-                   <Button2 title="Submit" onPress={()=>{                    
+                   <Button2 title="Submit" onPress={()=>{    
+                    setLoginPending(true)                
                     uploadProfileImage({image})
-                    updateMember(info.token,info.id,inputs)
+                    
+                    if(updateMember(info.token,info.id,inputs))
+                    {
+                      setTimeout(function () {
+                        setLoginPending(false)
+                      }, 2000);                  
+                    }
                     dispatch(updateInfomation(info.id,inputs.email,inputs.name,inputs.phone,info.token,inputs.avg,image))
                     }}/>
                  </View>
@@ -231,6 +240,7 @@ const SettingScreen_Account= (props) => {
                </TouchableOpacity>  */}
            </View>
         </View>
+        {loginPending ? <AppLoader/>: null} 
     </View>
   );
 };

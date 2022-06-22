@@ -16,6 +16,7 @@ import COLORS from '../components/colors'
 import {useSelector} from 'react-redux';
 import {byCategory,addExpense} from '../api/api_expense'
 import BottomSheet from 'reanimated-bottom-sheet';
+import AppCongratulation from '../components/AppCongratulation';
 import {colors,images2,countriesWithFlags} from '../components/salon2';
 import AddButton2 from '../components/AddButton2';
 import Animated from 'react-native-reanimated';
@@ -26,6 +27,7 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 const TODAY = 'TODAY';
 const MONTH = 'MONTH';
 export default HomeScreen =( {navigation,route} )=>{
+  const [congPending, setCongPending] = useState(false);
   const [reset,setReset] = useState(false)
   const [lists,setLists] = useState([]);
   const [listsDay,setListsDay] = useState([]);
@@ -185,7 +187,7 @@ export default HomeScreen =( {navigation,route} )=>{
           </View>
           <View style={{flexDirection:'row',justifyContent:'space-between',marginTop:10}}>
             <TouchableOpacity onPress={()=>{
-
+                setCongPending(true)
                 addExpense(info.token,inputs)
                 setReset(!reset)
                 sheetRef.current.snapTo(1)
@@ -214,6 +216,11 @@ export default HomeScreen =( {navigation,route} )=>{
        </View>
    </View>
   );
+  const disCongApp =()=>{
+    setTimeout(function () {
+      setCongPending(false);
+    }, 2000);
+  }
   return (
     <View style={styles.container}>
       <View style={{height:"25%"}}>
@@ -347,6 +354,8 @@ export default HomeScreen =( {navigation,route} )=>{
           </TouchableOpacity>
         </View>
       </View>
+      {congPending ? <AppCongratulation disCongApp={disCongApp} />
+      : null}
     </View>
     );  
 }

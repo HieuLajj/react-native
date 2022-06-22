@@ -95,10 +95,11 @@ const updateMember  = async(id,id_member,inputs)=>{
       if (res.data.success){
         console.log("update toan bo thong tin thanh cong")
       }  
-      return res.json;
+      //return res.json;
     } catch (error) {
       console.log(error.message);
     }
+    return true;
   }
 export {
     loginUser,

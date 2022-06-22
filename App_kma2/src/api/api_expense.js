@@ -74,14 +74,14 @@ const updateExpense  = async(id,id_item,inputs)=>{
   }
 }
 
-const listbyuser = async(id)=>{
+const listbyuser = async(id,page)=>{
     const config = {
         headers: {
           Authorization: `jwt ${id}`
         },
     };
     try {
-        const res = await client.get('/laihieu/expense/listbyuser'
+        const res = await client.get(`/laihieu/expense/listbyuser?page=${page}`
         ,
         config
         );
