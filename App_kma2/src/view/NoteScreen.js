@@ -9,6 +9,7 @@ import AddButton2 from '../components/AddButton2';
 import SelectDropdown from 'react-native-select-dropdown';
 import styless from '../components/styless';
 import BottomSheet from 'reanimated-bottom-sheet';
+import NetInfo from "@react-native-community/netinfo";
 import Note from '../components/Note';
 import {useNotes} from '../components/NoteProvider';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -24,6 +25,7 @@ import {
   StatusBar,
   TextInput,
   StyleSheet,
+  Button,
   Text,
   useColorScheme,
   View,
@@ -35,6 +37,24 @@ import {
 import { findFocusedRoute } from '@react-navigation/native';
 
 const NoteScreen= ({navigation}) => {
+
+  const [netInfo,setNetInfo] = useState('');
+
+  useEffect(()=>{
+    const data = NetInfo.addEventListener((state)=>{
+      setNetInfo(`connectionType: ${state.type} IsConnecte ?: ${state.isConnected}`)
+    });
+    return()=>{
+      data()
+    }
+  },[])
+  const handleGetNetInfo = () => {
+    NetInfo.fetch().then((state)=>{
+      console.log(state)
+      alert(`connectionType: ${state.type} IsConnecte ?: ${state.isConnected}`)
+    })
+  }
+
    // const [notes, setNotes] = useState([]);
     const { notes, setNotes} = useNotes();
     const [searchQuery, setSearchQuery] = useState('');
@@ -52,6 +72,7 @@ const NoteScreen= ({navigation}) => {
       description: '',
       time:  Date.now(),
     });
+
     const handleOnChange = (text,input) => {
       setInputs(prevState=>({...prevState,[input]:text}));
     };
@@ -104,7 +125,14 @@ const NoteScreen= ({navigation}) => {
      //findUser()
      findNotes();
     }, [])
+    const unsubscribe = NetInfo.addEventListener(state => {
+      console.log("Connection type", state.type);
+      console.log("Is connected2?", state.isConnected);
+      return state.isConnected;
+    });
+    unsubscribe();
     const renderInner = () =>(
+      
       <View style={styles2.panel}>
             <View style={{marginTop:10}}>
             <TextInput 
@@ -202,6 +230,9 @@ const NoteScreen= ({navigation}) => {
                     openNote(item)
                   }} item={item}/>}
         />
+        {/* {unsubscribe?<Text>fddffwe</Text>:<Text>ko co mang</Text>} */}
+        {/* <Button title='hoe' onPress={()=>{handleGetNetInfo()}}></Button> */}
+        <Text>{netInfo}</Text>
         {!notes.length ?  <View style={[StyleSheet.absoluteFillObject,styles.emptyHeaderContainer]}>
            <Text style={styles.emptyHeader}>Add Notes</Text>
         </View>: null

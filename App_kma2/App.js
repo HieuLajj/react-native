@@ -1,10 +1,11 @@
 
-import React, {useEffect,useContext} from 'react';
+import React, {useEffect,useContex,useState} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import { useNavigation } from '@react-navigation/native'
+import NetInfo from "@react-native-community/netinfo";
 import 'react-native-gesture-handler'
 import NoteProvider from './src/components/NoteProvider';
 //import Wave from 'react-native-waveview'
@@ -45,6 +46,7 @@ import AddButton from './src/components/AddButton';
 import HomeButton from './src/components/HomeButton';
 import TodoButton from './src/components/TodoButton';
 import SettingScreen from './src/view/SettingScreen';
+import Offline from './src/view/Offline';
 import { DrawerContent } from './src/components/DrawerContent';
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -128,6 +130,16 @@ function MyDraws(props){
 }
 
 const App= () => {
+  const [netInfo,setNetInfo] = useState();
+
+  useEffect(()=>{
+    const data = NetInfo.addEventListener((state)=>{
+      setNetInfo(state.isConnected)
+    });
+    return()=>{
+      data()
+    }
+  },[])
   const fetchApi = async ()=>{
     try {
       const res = await axios.get('http://192.168.1.235:8000/')
@@ -148,6 +160,7 @@ const App= () => {
   <Provider store={store}>
     <NavigationContainer>
      <NoteProvider>
+     {netInfo?
      <Stack.Navigator 
       initialRouteName="Login"
       screenOptions={{
@@ -161,7 +174,9 @@ const App= () => {
         <Stack.Screen name="TodayList" component={TodayListDelta}/>
         {/* <Stack.Screen name="HomeTab" component={MyTabs}/> */}
         <Stack.Screen name="MyDraw" component={MyDraws}/>
-      </Stack.Navigator>
+      </Stack.Navigator>:
+      <Offline/>
+      }
       </NoteProvider>
     </NavigationContainer>
   </Provider>

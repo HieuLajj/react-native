@@ -5,7 +5,9 @@ import {Calendar} from 'react-native-calendars'
 import ItemBox from '../components/ItemBox';
 import {useDispatch,useSelector} from 'react-redux';
 import BottomSheet from 'reanimated-bottom-sheet';
-import {byCategory} from '../api/api_expense'
+import {byCategory} from '../api/api_expense';
+import Geolocation from '@react-native-community/geolocation';
+
 import {
   ScrollView,
   StyleSheet,
@@ -15,6 +17,8 @@ import {
   Image,
   TextInput,
   RefreshControl,
+  PermissionsAndroid,
+  Platform,
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { TouchableOpacity } from 'react-native-gesture-handler';
@@ -26,9 +30,12 @@ import Animated from 'react-native-reanimated';
 import SelectDropdown from 'react-native-select-dropdown';
 import AppDelete from '../components/AppDelete';
 import AppFix from '../components/AppFix';
-
-
+var Holidays = require('date-holidays')
+const TODAY = 'TODAY';
+const MONTH = 'MONTH';
 const TodoScreen= ({navigation}) => {
+
+
 const [deletePending, setDeletePending] = useState(false);
 const [fixPending, setFixPending] = useState(false);
 const [reset,setReset] = useState(false)
@@ -43,6 +50,9 @@ const [refreshControl,setRefreshControl] = useState(false)
 const sheetRef = React.useRef(null);
 const dropdownRef = useRef({});
 const fall = new Animated.Value(1);
+const [data, setData] = useState({});
+const [day, setday] = useState(MONTH);
+const API_KEY = '8a963de39ac660e3b39c8e41f071487e';
 
 useEffect(() => {
   listbyuser(info.token,page).then((data)=>{
@@ -55,12 +65,41 @@ useEffect(() => {
 
  
     byCategory(info.token).then((data)=>{
-    setLists2(data.exp.month.map((item,index)=>({
-        ...item,
-        color: colors[index%colors.length],
-        image: images2[item._id],
-        key:index,
-    })))})
+      if(day==TODAY){
+        setLists2(data.exp.today.map((item,index)=>({
+          ...item,
+          color: colors[index%colors.length],
+          image: images2[item._id],
+          key:index,
+      })))}else{
+        setLists2(data.exp.month.map((item,index)=>({
+          ...item,
+          color: colors[index%colors.length],
+          image: images2[item._id],
+          key:index,
+      })))
+      }    
+    }  
+    )
+   // if (hasLocationPermission) {
+      Geolocation.getCurrentPosition(
+        (position) => {
+          console.log(position.coords.latitude)
+          console.log(position.coords.longitude)
+          fetchDataFromApi(20.980826,105.796288);
+    //fetchDataFromApi(position.coords.latitude, position.coords.longitude);
+          },
+          (error) => {
+              // See error code charts below.
+              console.log(error.code, error.message);
+              
+          },
+          { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
+      );
+ // }
+
+    
+    
 
 }, [reset])
 
@@ -74,6 +113,18 @@ useEffect(() => {
   })
 
 }, [page])
+
+
+const fetchDataFromApi = (latitude, longitude) => {
+  if(latitude && longitude) {
+    fetch(`https://api.openweathermap.org/data/2.5/onecall?lat=${latitude}&lon=${longitude}&exclude=hourly,minutely&units=metric&appid=${API_KEY}`).then(res => res.json()).then(data => {
+    
+    setData(data)
+    })
+  }
+  
+}
+
 const [inputs, setInputs] = useState({
   title: 'Other',
   description: '',
@@ -139,7 +190,7 @@ const handleOnChange = (text,input) => {
                   data4[v._id] = v.total<info.avg? {selected: true, marked: true, selectedColor: 'blue'}:{selected: true, marked: true, selectedColor: 'red'}
                 }
               );
-              console.log(data4)
+            //  console.log(data4)
               setListDayMonth(data4);
               // setLists(data.exp.map((item,index)=>({
               //   ...item,
@@ -338,6 +389,41 @@ function setSelectCategoryByName(_id) {
    
     return (
       <View style={{alignItems:'center', justifyContent:'center'}}>
+        <View style={{ flexDirection: 'row',}}>
+            <TouchableOpacity
+              onPress = {()=>{setday(TODAY), setReset(!reset)}}
+              style={{alignContent:'center',justifyContent:'center'}}
+              disabled = {day === TODAY ? true : false}
+            >
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: 25,
+                  color:day === TODAY ? COLORS.blue: COLORS.black,
+                  opacity: day === TODAY ? 1 : 0.5,
+                }}
+              >TODAY</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style = {{
+                marginLeft: 20,
+                salignContent:'center',
+                justifyContent:'center'
+              }}
+              onPress = {()=>{setday(MONTH), setReset(!reset)}}
+              disabled = {day === MONTH ? true : false}
+            >
+              <Text
+                style={{
+                  fontWeight: 'bold',
+                  fontSize: 25,
+                  color:day === MONTH ? COLORS.blue: COLORS.black,
+                  opacity: day === MONTH ? 1 : 0.5,
+                }}
+              >MONTH</Text>
+            </TouchableOpacity>
+        </View>
+        {lists2.length ?<View>
         <VictoryPie data={lists2.slice(0,5)} 
                     labelRadius={({ innerRadius }) => (styless.widowWidth * 0.4 + innerRadius) / 2.5}
                     x="_id" 
@@ -365,6 +451,10 @@ function setSelectCategoryByName(_id) {
         <View style={{position:'absolute',top:'46%',left:'42%'}}>
           <Text style={{fontSize:16, fontWeight:"bold"}}>{lists2.length} Expenses</Text>
         </View>
+        </View>:  <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>
+                    <Text style={{fontSize:20,opacity:0.5}}>no infomation</Text>
+                  </View>
+        }
       </View>
     )
   }
@@ -425,21 +515,12 @@ function setSelectCategoryByName(_id) {
   }
 
   function renderCalendar({navigation}){
-    
+    const img = {uri: 'http://openweathermap.org/img/wn/'+ data.current.weather[0].icon
+    +'@4x.png'}
     return(
-      <View>
+      <View style={{flex:1}}>
          <Calendar
              markedDates={
-            //    {
-            //   '2022-05-16': {selected: true, marked: true, selectedColor: 'blue'},
-            //   '2022-05-17': {selected: true, marked: true, selectedColor: 'red'},
-            //   '2022-05-18': {selected: true, marked: true, selectedColor: 'red'},
-            //   '2022-05-19': {selected: true, marked: true, selectedColor: 'red'},
-            //   '2022-05-20': {selected: true, marked: true, selectedColor: 'blue'},
-            //   '2022-05-21': {selected: true, marked: true, selectedColor: 'blue'},
-            //   '2022-05-22': {selected: true, marked: true, selectedColor: 'blue'},
-            // }
-//Object.entries(listDayMonth)
              listDayMonth
           }
             onDayPress={(e)=>{
@@ -448,6 +529,37 @@ function setSelectCategoryByName(_id) {
             // navigation.navigate('SalonList',{dataitem: {item},data: day});
            }}
          />
+         <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+        <View style={{width:'100%',flexDirection:'row',justifyContent:'space-around',alignItems:'center'}}>
+        <Image source={img} style={{width: 150, height: 150}} />
+          <View>
+            <View style={{flexDirection:'row'}} >
+              <Text style={{fontSize:18}}>Description: </Text>
+              <Text style={{fontSize:20,fontWeight:'bold',color:'#008cff'}}>{data.current.weather[0].description}</Text>
+            </View>
+            <View style={{flexDirection:'row'}} >
+              <Text style={{fontSize:18}}>Temp: </Text>
+              <Text style={{fontSize:20,fontWeight:'bold',color:'red'}}>{data.current.temp}</Text>
+            </View>
+            <View style={{flexDirection:'row'}} >
+              <Text style={{fontSize:18}}>Cloud: </Text>
+              <Text style={{fontSize:20,fontWeight:'bold',color:'gray'}}>{data.current.clouds}</Text>
+            </View>
+            <View style={{flexDirection:'row'}} >
+              <Text style={{fontSize:18}}>Feel like: </Text>
+              <Text style={{fontSize:20,fontWeight:'bold',color:'orange'}}>{data.current.feels_like}</Text>
+            </View>
+            <View style={{flexDirection:'row'}} >
+              <Text style={{fontSize:18}}>Humidity: </Text>
+              <Text style={{fontSize:20,fontWeight:'bold',color:'blue'}}>{data.current.humidity}</Text>
+            </View>
+          </View>
+        </View>
+        </View>
+        
+        {/* console.log({data.current});
+        console.log({data.lat});
+        console.log({data.lon});  */}
       </View>
      
     )

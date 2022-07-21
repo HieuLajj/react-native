@@ -1,4 +1,4 @@
-import React, {Component,useRef,useEffect,useState} from 'react';
+import React, {useRef,useEffect,useState} from 'react';
 import {
   RefreshControl,
   StyleSheet,
@@ -6,16 +6,16 @@ import {
   View,
   TextInput,
   TouchableOpacity,
-  Dimensions,
   ImageBackground,
   Image,
-  state,
   FlatList,
+  Alert,
 } from 'react-native';
 import COLORS from '../components/colors'
 import {useSelector} from 'react-redux';
 import {byCategory,addExpense} from '../api/api_expense'
 import BottomSheet from 'reanimated-bottom-sheet';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import AppCongratulation from '../components/AppCongratulation';
 import {colors,images2,countriesWithFlags} from '../components/salon2';
 import AddButton2 from '../components/AddButton2';
@@ -30,6 +30,7 @@ export default HomeScreen =( {navigation,route} )=>{
   const [congPending, setCongPending] = useState(false);
   const [reset,setReset] = useState(false)
   const [lists,setLists] = useState([]);
+  const [lists2,setList2s] = useState([]);
   const [listsDay,setListsDay] = useState([]);
   const [listsMonth,setListsMonth] = useState([]);
   const [day, setday] = useState(TODAY);
@@ -42,18 +43,35 @@ export default HomeScreen =( {navigation,route} )=>{
   const dropdownRef = useRef({});
   const info = useSelector((state)=>state.personalInfo)
   var texttien = info.avg-moneyDay;
+  const findSpend = async()=>{
+    const result = await AsyncStorage.getItem('spends');
+    if(result.length != 0){ 
+      setList2s(JSON.parse(result))
+    };
+  }
+  const deleteSpend = async() =>{
+    const resule4 = await AsyncStorage.setItem('spends',JSON.stringify([]));
+    setList2s([])
+  }
+  // const updateOffline = () =>{
+  //   if(lists2.length!==0){
+  //     memorySpend();
+  //    }
+  // }
+  // setTimeout(updateOffline,8000);
   useEffect(() => {
+    findSpend();
     texttien= info.avg-moneyDay
     byCategory(info.token).then((data)=>{
+      
      
-     
-      setLists(data.exp.today.map((item,index)=>({
+    setLists(data.exp.today.map((item,index)=>({
         ...item,
         color: colors[index%colors.length],
         image: images2[item._id],
         key:index,
-      })))
-      if(data.exp.totalday!=undefined){
+    })))
+    if(data.exp.totalday!=undefined){
       setMoney(data.exp.totalday.total)}
     })},[])
   useEffect(() => {
@@ -221,7 +239,39 @@ export default HomeScreen =( {navigation,route} )=>{
       setCongPending(false);
     }, 2000);
   }
+  const memorySpend = () =>{
+    Alert.alert('Ban co du lieu offline!','ban co muon cap nhap ngay lap tuc!',[
+      {
+        text: 'Đồng ý',
+        onPress:()=>{
+          console.log("tienhanh")
+           console.log(lists2)
+          lists2.forEach(element => {
+            console.log(element);
+            addExpense(info.token,element)
+            console.log("tien hanh them hang loat")
+          });
+          deleteSpend();
+        }
+      },
+      {
+        text: 'Không',
+        onPress:()=>{
+          deleteSpend();
+        }
+      },
+      {
+        text: 'Để sau',
+        onPress:()=>{
+          console.log("no thanks")
+        }
+      }
+    ],{
+      cancelable: true,
+    })
+  }
   return (
+
     <View style={styles.container}>
       <View style={{height:"25%"}}>
         
@@ -238,6 +288,16 @@ export default HomeScreen =( {navigation,route} )=>{
              }
             }
             >${texttien}</Text>
+            {lists2.length!==0 ? <TouchableOpacity 
+              style={{
+                position: 'absolute',
+                right:20,
+                bottom:'50%',
+              }}
+              onPress={()=>{memorySpend()}}
+            >
+               <Image source={ require('../images/chuong1.png')} style={{width: 100, height: 100}} />
+            </TouchableOpacity> : null}
         </ImageBackground>
         {/* <TouchableOpacity 
           style={{

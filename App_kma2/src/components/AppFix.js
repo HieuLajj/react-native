@@ -15,7 +15,7 @@ import {
 const AppFix = () =>{
     return(
         <View style={[StyleSheet.absoluteFillObject,styles.container]}>
-          <LottieView source={require('../animations/103617notes.json')}
+          <LottieView source={require('../animations/complete.json')}
                        autoPlay = {true}
                        loop = {false}
           />

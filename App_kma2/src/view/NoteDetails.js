@@ -11,6 +11,7 @@ import React,{useState,useRef} from 'react'
 import { colors } from '../components/salon2'
 import {useNotes} from '../components/NoteProvider'
 import COLORS from '../components/colors'
+
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AddButton2 from '../components/AddButton2'
 import styless from '../components/styless';
